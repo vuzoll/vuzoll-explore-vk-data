@@ -1,3 +1,18 @@
 = vuzoll-explore-vk-data
 
 Generates exploration reports for vk data.
+
+== HOWTO: start with docker
+
+[source,shell]
+----
+docker ps # to determine if container is already running
+docker kill $CONTAINER_ID # if needed
+
+docker pull vuzoll/vuzoll-explore-vk-data
+docker run -dit -p 3000:3000 vuzoll-explore-vk-data
+----
+
+== HOWTO: check that service is up
+
+Go to http://138.68.145.93/explore
