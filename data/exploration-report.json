@@ -1,0 +1,190 @@
+{
+  "explore": {
+    "size": {
+      "total":  5724,
+      "unique": 5724
+    },
+    "country": {
+      "count": 72,
+      "undefined": 173,
+      "distribution": [
+        { "name": "#2", "count": 3956 },
+        { "name": "#1", "count": 1281 },
+        { "name": "#9", "count": 49 },
+        { "name": "#3", "count": 30 },
+        { "name": "#65", "count": 26 },
+        { "name": "#160", "count": 24 },
+        { "name": "#215", "count": 16 },
+        { "name": "#10", "count": 11 },
+        { "name": "#88", "count": 10 },
+        { "name": "#87", "count": 9 }
+      ]
+    },
+    "city": {
+      "count": 517,
+      "undefined": 0,
+      "distribution": [
+        { "name": "#314", "count": 2019 },
+        { "name": "#2", "count": 445 },
+        { "name": "#1", "count": 387 },
+        { "name": "#4917", "count": 380 },
+        { "name": "#1581", "count": 263 },
+        { "name": "#280", "count": 164 },
+        { "name": "#1057", "count": 88 },
+        { "name": "#292", "count": 57 },
+        { "name": "#650", "count": 47 },
+        { "name": "#2917", "count": 40 }
+      ]
+    },
+    "university": {
+      "count": 881,
+      "undefined": 1121,
+      "distribution": [
+        { "name": "КНУ им. Т. Шевченко", "count": 658 },
+        { "name": "НТУУ «КПИ им. И. Сикорского»", "count": 310 },
+        { "name": "НАУ (бывш. КИИГА, КМУГА)", "count": 113 },
+        { "name": "КНУТКиТ (КГИТИ) им. И. К. Карпенко-Карого", "count": 94 },
+        { "name": "ПНПУ им. В. Г. Короленко (ПГПУ)", "count": 94 },
+        { "name": "КНЭУ им. В. Гетьмана (КИНХ им. Д. С. Коротченко)", "count": 90 },
+        { "name": "СПбГУ", "count": 85 },
+        { "name": "НПУ им. М. Драгоманова", "count": 76 },
+        { "name": "ПГАА", "count": 74 },
+        { "name": "КНУКиИ", "count": 70 }
+      ]
+    },
+    "faculty": {
+      "count": 1105,
+      "undefined": 1930,
+      "distribution": [
+        { "name": "Факультет кибернетики КНУ им. Т. Шевченко", "count": 198 },
+        { "name": "Экономический факультет КНУ им. Т. Шевченко", "count": 65 },
+        { "name": "Физический факультет КНУ им. Т. Шевченко", "count": 57 },
+        { "name": "Театрального искусства КНУТКиТ (КГИТИ) им. И. К. Карпенко-Карого", "count": 48 },
+        { "name": "Информатики и вычислительной техники НТУУ «КПИ им. И. Сикорского»", "count": 47 },
+        { "name": "Институт журналистики КНУ им. Т. Шевченко", "count": 36 },
+        { "name": "Юридический факультет КНУ им. Т. Шевченко", "count": 34 },
+        { "name": "Механико-математический факультет КНУ им. Т. Шевченко", "count": 31 },
+        { "name": "Институт филологии КНУ им. Т. Шевченко", "count": 31 },
+        { "name": "Факультет социологии КНУ им. Т. Шевченко", "count": 31 }
+      ]
+    },
+    "graduateYear": {
+      "count": 69,
+      "undefined": 2675,
+      "distribution": [
+        { "name": "2014", "count": 285 },
+        { "name": "2013", "count": 257 },
+        { "name": "2012", "count": 192 },
+        { "name": "2011", "count": 171 },
+        { "name": "2015", "count": 163 },
+        { "name": "2010", "count": 160 },
+        { "name": "2007", "count": 134 },
+        { "name": "2009", "count": 131 },
+        { "name": "2008", "count": 124 },
+        { "name": "2016", "count": 122 }
+      ]
+    },
+    "occupation": {
+      "type": {
+        "count": 4,
+        "distribution": [
+          { "name": "university", "count": 3136 },
+          { "name": "work", "count": 2291 },
+          { "name": "null", "count": 177 },
+          { "name": "school", "count": 120 }
+        ]
+      },
+      "name": {
+        "count": 2907,
+        "distribution": [
+          { "name": "КНУ им. Т. Шевченко", "count": 511 },
+          { "name": "НТУУ «КПИ им. И. Сикорского»", "count": 214 },
+          { "name": "null", "count": 177 },
+          { "name": "НАУ (бывш. КИИГА, КМУГА)", "count": 75 },
+          { "name": "КНЭУ им. В. Гетьмана (КИНХ им. Д. С. Коротченко)", "count": 69 },
+          { "name": "КНУТКиТ (КГИТИ) им. И. К. Карпенко-Карого", "count": 61 },
+          { "name": "ПГАА", "count": 55 },
+          { "name": "НПУ им. М. Драгоманова", "count": 54 },
+          { "name": "ПНПУ им. В. Г. Короленко (ПГПУ)", "count": 52 },
+          { "name": "СПбГУ", "count": 50 }
+        ]
+      }
+    },
+    "work": {
+      "name": {
+        "count": 2174,
+        "distribution": [
+          { "name": "Телеканал СТБ", "count": 6 },
+          { "name": "Школа", "count": 5 },
+          { "name": "Яндекс", "count": 4 },
+          { "name": "Планета Земля", "count": 4 },
+          { "name": "Crytek", "count": 4 },
+          { "name": "Студия Мамахохотала", "count": 3 },
+          { "name": "KEYBEAR | Киберспортивная организация", "count": 3 },
+          { "name": "PHRANK ROC RECORDINGS | KYIV", "count": 3 },
+          { "name": "Facebook", "count": 3 },
+          { "name": "ВЕРЕМІЙ", "count": 3 }
+        ]
+      }
+    },
+    "career": {
+      "size": {
+        "distribution": [
+          { "name": "0", "count": 3003 },
+          { "name": "1", "count": 1931 },
+          { "name": "2", "count": 321 },
+          { "name": "3", "count": 190 },
+          { "name": "4", "count": 94 },
+          { "name": "5", "count": 80 },
+          { "name": "7", "count": 58 },
+          { "name": "6", "count": 47 }
+        ]
+      },
+      "company": {
+        "count": 2943,
+        "distribution": [
+          { "name": "Школа", "count": 8 },
+          { "name": "Facebook", "count": 7 },
+          { "name": "Crytek", "count": 5 },
+          { "name": "Планета Земля", "count": 5 },
+          { "name": "Softheme", "count": 4 },
+          { "name": "аптека", "count": 4 },
+          { "name": "МакДональдс", "count": 4 },
+          { "name": "EPAM Systems", "count": 3 },
+          { "name": "freelance", "count": 3 },
+          { "name": "Playtech", "count": 3 }
+        ]
+      },
+      "city": {
+        "count": 451,
+        "distribution": [
+          { "name": "#314", "count": 1499 },
+          { "name": "#2", "count": 518 },
+          { "name": "#1", "count": 387 },
+          { "name": "#4917", "count": 180 },
+          { "name": "#1581", "count": 179 },
+          { "name": "#280", "count": 144 },
+          { "name": "#1057", "count": 95 },
+          { "name": "#650", "count": 43 },
+          { "name": "#292", "count": 42 },
+          { "name": "#628", "count": 34 }
+        ]
+      },
+      "position": {
+        "count": 2312,
+        "distribution": [
+          { "name": "фотограф", "count": 43 },
+          { "name": "директор", "count": 40 },
+          { "name": "преподаватель", "count": 38 },
+          { "name": "администратор", "count": 29 },
+          { "name": "менеджер", "count": 28 },
+          { "name": "руководитель", "count": 21 },
+          { "name": "арт-директор", "count": 19 },
+          { "name": "режиссер", "count": 18 },
+          { "name": "доцент", "count": 17 },
+          { "name": "программист", "count": 16 }
+        ]
+      }
+    }
+  }
+}
