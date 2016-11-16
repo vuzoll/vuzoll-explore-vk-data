@@ -15,4 +15,4 @@ docker run -dit -p 3000:3000 vuzoll-explore-vk-data
 
 == HOWTO: check that service is up
 
-Go to http://138.68.145.93/explore
+Go to http://138.68.145.93:3000/explore
