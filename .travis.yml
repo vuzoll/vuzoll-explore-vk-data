@@ -5,9 +5,11 @@ language: java
 services:
   - docker
 
+before_install:
+  - chmod +x gradlew
+
 before_script:
   - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  - chmod +x gradlew
 
 script:
   - ./gradlew distZip
