@@ -1,10 +1,16 @@
 import groovy.json.JsonSlurper
+import ratpack.http.MutableHeaders
 
 import static ratpack.groovy.Groovy.ratpack
 
 ratpack {
     handlers {
         get('explore') {
+            MutableHeaders headers = response.headers
+            headers.set('Access-Control-Allow-Origin', '*')
+            headers.set('Access-Control-Allow-Headers', 'x-requested-with, origin, content-type, accept')
+            headers.set('content-type', 'application/json')
+
             String inputFile = '/data/vk.data'
 
             File dataFile = new File(inputFile)
