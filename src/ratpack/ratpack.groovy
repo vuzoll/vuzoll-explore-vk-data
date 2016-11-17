@@ -4,7 +4,7 @@ import static ratpack.groovy.Groovy.ratpack
 
 ratpack {
     handlers {
-        get {
+        get('explore') {
             String inputFile = '/data/vk.data'
 
             File dataFile = new File(inputFile)
@@ -12,7 +12,6 @@ ratpack {
             def dataAsJson = new JsonSlurper().parseText(dataAsText)
 
             render """{
-  "explore": {
     "size": {
       "total": ${dataAsJson.size()},
       "unique": ${dataAsJson.collect({ it.user_id }).unique().size()}
@@ -75,7 +74,6 @@ ratpack {
         "distribution": ${dataAsJson.collect({ it.career.collect({it.position?.toLowerCase()}) }).flatten().findAll({it != null}).groupBy({ it }).sort({ -it.value.size() }).collect({ key, value -> [ '{ "name": "' + key + '", "count": ' + value.size() + ' }' ] }).take(10)}
       }
     }
-  }
 }"""
         }
     }
