@@ -1,5 +1,7 @@
 sudo: required
 
+language: java
+
 services:
   - docker
 
@@ -7,5 +9,8 @@ before_script:
   - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
 
 script:
+  - ./gradlew distZip
+
+after_script:
   - docker build -t vuzoll/vuzoll-explore-vk-data .
   - docker push vuzoll/vuzoll-explore-vk-data
