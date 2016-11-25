@@ -9,8 +9,8 @@ Generates exploration reports for vk data.
 docker ps # to determine if container is already running
 docker kill $CONTAINER_ID # if needed
 
-docker pull vuzoll/vuzoll-explore-vk-data
-docker run -dit -p 5050:5050 -v /data:/data vuzoll/vuzoll-explore-vk-data
+docker pull vuzoll/vuzoll-explore-vk-data:$TAG # to load specific image
+docker run -dit -p 5050:5050 -v /data:/data vuzoll/vuzoll-explore-vk-data:$TAG # to start specific image
 ----
 
 == HOWTO: check that service is up
