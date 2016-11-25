@@ -19,4 +19,4 @@ docker run -dit -p 5050:5050 -v /data:/data vuzoll/vuzoll-explore-vk-data:$TAG #
 
 == HOWTO: check that service is up
 
-Go to http://138.68.145.93:5050/explore
+Go to http://138.68.145.93:5050/datasets/vk-by-vlad/explore
