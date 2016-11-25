@@ -17,7 +17,16 @@ ratpack {
             String dataAsText = "[ ${dataFile.text.split('\n').join(', ')} ]"
             def dataAsJson = new JsonSlurper().parseText(dataAsText)
 
-            render """${dataAsJson.get(new Random().nextInt(dataAsJson.size()))}"""
+            def randomRecord = dataAsJson.get(new Random().nextInt(dataAsJson.size()))
+
+            render """{
+                "id": ${randomRecord.user_id},
+                "country": "id:${randomRecord.country}",
+                "city": "id:${randomRecord.city}",
+                "university": "${randomRecord.university_name}",
+                "faculty": "${randomRecord.faculty_name}",
+                "raw": ${randomRecord}
+            }"""
         }
         get('datasets/vk-by-vlad/explore') {
             MutableHeaders headers = response.headers
