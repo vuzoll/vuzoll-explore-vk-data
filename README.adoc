@@ -2,6 +2,10 @@
 
 Generates exploration reports for vk data.
 
+TravisCI - https://travis-ci.org/vuzoll/vuzoll-explore-vk-data/
+
+DockerHub - https://hub.docker.com/r/vuzoll/vuzoll-explore-vk-data/
+
 == HOWTO: start with docker
 
 [source,shell]
