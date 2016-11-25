@@ -25,7 +25,7 @@ ratpack {
                 "city": "id:${randomRecord.city}",
                 "university": "${randomRecord.university_name}",
                 "faculty": "${randomRecord.faculty_name}",
-                "raw": ${randomRecord}
+                "raw": "${randomRecord}"
             }"""
         }
         get('datasets/vk-by-vlad/explore') {
