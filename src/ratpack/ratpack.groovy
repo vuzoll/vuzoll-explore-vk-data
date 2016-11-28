@@ -5,31 +5,6 @@ import static ratpack.groovy.Groovy.ratpack
 
 ratpack {
     handlers {
-        get('datasets/vk-by-vlad/record/:id') {
-            MutableHeaders headers = response.headers
-            headers.set('Access-Control-Allow-Origin', '*')
-            headers.set('Access-Control-Allow-Headers', 'x-requested-with, origin, content-type, accept')
-            headers.set('content-type', 'application/json')
-
-            String inputFile = '/data/vk.data'
-
-            File dataFile = new File(inputFile)
-            String dataAsText = "[ ${dataFile.text.split('\n').join(', ')} ]"
-            def dataAsJson = new JsonSlurper().parseText(dataAsText)
-
-            def id = pathTokens.id
-            def record = dataAsJson.get(id)
-
-            render """{
-                "id": ${id},
-                "vkid": ${record.user_id},
-                "country": "id:${record.country}",
-                "city": "id:${record.city}",
-                "education" : ${record.universities.collect( { '{ "faculty": "' + it.faculty_name + '", "university": "' + it.name + '", "city": "id:' + it.city + '", "country": "id:' + it.country + '" }' })}, 
-                "career" : ${record.career.collect( { '{ "position": "' + it.position + '", "company": "' + it.company + '", "city": "id:' + it.city_id + '", "country": "id:' + it.country_id + '" }' })}, 
-                "raw": "${record}"
-            }"""
-        }
         get('datasets/vk-by-vlad/record/random') {
             MutableHeaders headers = response.headers
             headers.set('Access-Control-Allow-Origin', '*')
@@ -53,6 +28,31 @@ ratpack {
                 "education" : ${randomRecord.universities.collect( { '{ "faculty": "' + it.faculty_name + '", "university": "' + it.name + '", "city": "id:' + it.city + '", "country": "id:' + it.country + '" }' })}, 
                 "career" : ${randomRecord.career.collect( { '{ "position": "' + it.position + '", "company": "' + it.company + '", "city": "id:' + it.city_id + '", "country": "id:' + it.country_id + '" }' })}, 
                 "raw": "${randomRecord}"
+            }"""
+        }
+        get('datasets/vk-by-vlad/record/:id') {
+            MutableHeaders headers = response.headers
+            headers.set('Access-Control-Allow-Origin', '*')
+            headers.set('Access-Control-Allow-Headers', 'x-requested-with, origin, content-type, accept')
+            headers.set('content-type', 'application/json')
+
+            String inputFile = '/data/vk.data'
+
+            File dataFile = new File(inputFile)
+            String dataAsText = "[ ${dataFile.text.split('\n').join(', ')} ]"
+            def dataAsJson = new JsonSlurper().parseText(dataAsText)
+
+            def id = pathTokens.id
+            def record = dataAsJson.get(id)
+
+            render """{
+                "id": ${id},
+                "vkid": ${record.user_id},
+                "country": "id:${record.country}",
+                "city": "id:${record.city}",
+                "education" : ${record.universities.collect( { '{ "faculty": "' + it.faculty_name + '", "university": "' + it.name + '", "city": "id:' + it.city + '", "country": "id:' + it.country + '" }' })}, 
+                "career" : ${record.career.collect( { '{ "position": "' + it.position + '", "company": "' + it.company + '", "city": "id:' + it.city_id + '", "country": "id:' + it.country_id + '" }' })}, 
+                "raw": "${record}"
             }"""
         }
         get('datasets/vk-by-vlad/explore') {
