@@ -42,7 +42,7 @@ ratpack {
             String dataAsText = "[ ${dataFile.text.split('\n').join(', ')} ]"
             def dataAsJson = new JsonSlurper().parseText(dataAsText)
 
-            def id = pathTokens.id
+            def id = Integer.parseInt(pathTokens.id)
             def record = dataAsJson.get(id)
 
             render """{
