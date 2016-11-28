@@ -23,8 +23,8 @@ ratpack {
                 "id": ${randomRecord.user_id},
                 "country": "id:${randomRecord.country}",
                 "city": "id:${randomRecord.city}",
-                "education" : ${randomRecord.universities.collect( { '{ "faculty": "' + it.faculty_name + '", "university": "' + it.name + '", "city": "id:' + it.city + '", "country": "id:' + it.country + '" }' })}
-                "career" : ${randomRecord.career.collect( { '{ "position": "' + it.position + '", "company": "' + it.company + '", "city": "id:' + it.city_id + '", "country": "id:' + it.country_id + '" }' })}
+                "education" : ${randomRecord.universities.collect( { '{ "faculty": "' + it.faculty_name + '", "university": "' + it.name + '", "city": "id:' + it.city + '", "country": "id:' + it.country + '" }' })}, 
+                "career" : ${randomRecord.career.collect( { '{ "position": "' + it.position + '", "company": "' + it.company + '", "city": "id:' + it.city_id + '", "country": "id:' + it.country_id + '" }' })}, 
                 "raw": "${randomRecord}"
             }"""
         }
