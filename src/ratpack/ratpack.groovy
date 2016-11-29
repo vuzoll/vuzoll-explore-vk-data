@@ -60,7 +60,7 @@ ratpack {
 
         post('datasets/vk-by-vlad/explore/generate-for-aus') {
             String inputFile = '/data/vk.data'
-            String outputFile = "/data/aus-data-$System.currentTimeMillis().csv"
+            String outputFile = "/data/aus-data-${System.currentTimeMillis()}.csv"
 
             File dataFile = new File(inputFile)
             String dataAsText = "[ ${dataFile.text.split('\n').join(', ')} ]"
