@@ -2,6 +2,10 @@
 
 Generates exploration reports for vk data.
 
+TravisCI - https://travis-ci.org/vuzoll/vuzoll-explore-vk-data/
+
+DockerHub - https://hub.docker.com/r/vuzoll/vuzoll-explore-vk-data/
+
 == HOWTO: start with docker
 
 [source,shell]
@@ -9,10 +13,10 @@ Generates exploration reports for vk data.
 docker ps # to determine if container is already running
 docker kill $CONTAINER_ID # if needed
 
-docker pull vuzoll/vuzoll-explore-vk-data
-docker run -dit -p 5050:5050 -v /data:/data vuzoll/vuzoll-explore-vk-data
+docker pull vuzoll/vuzoll-explore-vk-data:$TAG # to load specific image
+docker run -dit -p 5050:5050 -v /data:/data vuzoll/vuzoll-explore-vk-data:$TAG # to start specific image
 ----
 
 == HOWTO: check that service is up
 
-Go to http://138.68.145.93:5050/explore
+Go to http://138.68.145.93:5050/datasets/vk-by-vlad/explore

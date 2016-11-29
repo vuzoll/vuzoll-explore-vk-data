@@ -11,9 +11,9 @@ before_install:
 before_script:
   - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
 
-script:
-  - ./gradlew distZip
-
 after_script:
-  - docker build -t vuzoll/vuzoll-explore-vk-data .
-  - docker push vuzoll/vuzoll-explore-vk-data
+  - export DOCKER_REPO=vuzoll/vuzoll-explore-vk-data
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH | tr '/' '-' ; fi`
+  - docker build -t $DOCKER_REPO:travis-$TRAVIS_BUILD_NUMBER .
+  - docker tag $DOCKER_REPO:travis-$TRAVIS_BUILD_NUMBER $DOCKER_REPO:$TAG
+  - docker push $DOCKER_REPO
