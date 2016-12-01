@@ -3,17 +3,27 @@ sudo: required
 language: java
 
 services:
-  - docker
+- docker
 
 before_install:
-  - chmod +x gradlew
+- chmod +x gradlew
 
 before_script:
-  - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+- docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
 
 after_script:
-  - export DOCKER_REPO=vuzoll/vuzoll-explore-vk-data
-  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH | tr '/' '-' ; fi`
-  - docker build -t $DOCKER_REPO:travis-$TRAVIS_BUILD_NUMBER .
-  - docker tag $DOCKER_REPO:travis-$TRAVIS_BUILD_NUMBER $DOCKER_REPO:$TAG
-  - docker push $DOCKER_REPO
+- export DOCKER_REPO=vuzoll/vuzoll-explore-vk-data
+- export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH | tr '/' '-' ; fi`
+- docker build -t $DOCKER_REPO:travis-$TRAVIS_BUILD_NUMBER .
+- docker tag $DOCKER_REPO:travis-$TRAVIS_BUILD_NUMBER $DOCKER_REPO:$TAG
+- docker push $DOCKER_REPO
+
+notifications:
+  slack:
+    secure: LG9yaDqE3HRNrtAmj4zA4Y3v4I70iwUiCCJgExgq+7ehEUCwHbog4KhZgs+pY4TNjFy9aA6taGvSalNNVkIbBpwTNEfFl8/JFd7kE2Ew1/inZGxZSK2izhN+56NS9ycZd570MmXPKGsJHxuDE8tEQaTP/oC0TLKVbhn1a0yHo59SFw1QGX5ZP2D0xM6xCByGV1bjlwJZVg05XOiUVZHI1mZZPs5fRP/USrh7k5ZvUx06d2zAcPWrsJDzDf81WjGyULoAH4btxW/nbfUEgqHNPjkQI/HIFvmvxtLkWroKPw9FV/cIxRTw8IPexuZW2flHLaub9RGAkBURjVdCDfooF5hifHk8pKHJ/8yYS7N+vTe8jxEyz6JCSJm+WghU77yYy6VoUTBABy2gngZcbiFovg6Ip0QRutuoizwC+nAEGh4DXqcCfEkYemcwIzlmJr9XGMdAEg3tST1npkgSkhmsS54JcuHt41QcO9YtW66BhoncsftaTLcJ2L19y6LToUETKO+k/w6lRbmPM3Fekh5JW+FAU9B1CczAnr+S8PwhwjDfO7OuuQvriMCO8tdZdYYhNIt5/dpeUS3/96Wph62jkVy6ZD4lHIC8DDfC5KC7jgudo7L3F5YXqHJAun2NdESfUYpS6syxnKEyVyNRTsUPQwKearvWN/0CR21B5tGLEHI=
+
+env:
+  global:
+  - secure: Dt1vaNs26dfuffeEfyuhI5ZewBEdG65S3TYzsqwS50nfIYApgVrtQWC5IOAe8McdQSs3uTQjB1f2MPZq6czs233J4cwnUQW322quGjdHW9I+8o6vEZMQNJjbOkS8bhODPma30/8Ntr8MgOUcWugi1rCyHXGvslvV+xjjtpyg94CRlkFzbxS7iEhLKtmWZpaxjizcQ+BLZTsgINTtXjcZsJucR0ALOV5AcWLnK6jSpKQESR1AyPkvBtY7SXZZcGAEoKKj7hPvzFKYwSJ0jDGbmMcv+KkPi2Ldi5MQLDM2/8OlLuX/aw24pFa9Mi01UXgv3wlk3xveco9PNYGirEv1uRpGuCkZ/Z2jwnhHkJKzOObDhq3/+RFEasssHuFpp3ySV2yIOuaV8ZRASa20LiIIqpAq0vMgFCtkHbLibofWWcoqu2WOZabHrUV7/kr1nQIaX6QgfmmP2t5Llx6p0+VuIioA64n26iRvCN4w/3sUFMI9s25l8VDRsvIe2eE63y948RsMuSTX4NHcBsoAa7h6w+3vokYhOGlCuKNZUdxvcL9nEk/GKdUYZ+AfXc+ZxJ4Hq8j3ra3Rhot8OY2OJyvRQeNZlTgB66TYIbDbEnEDBBXg6CspdLeSPRkGv986Ik0h6XWktjuAhFqredWelksEUC26Vesnsi5+HWX8DMfokAA=
+  - secure: p5DL3+mvUJjdo75oRHAqmFhv8FeIR3B573ryQ+bE1ycd6Y43w5L7NsdsXdBxH2XgGOFiHmzHqTNVfOrMUbsDKh5MQSV43FBRHQYFcAcNcwKc2snEOxCBThBVvc351g6rAKDqgxH0L51p2tolwKG0X7jCd2Rq29oEc/lxLfl0kJRboZvwkn8MLt8GvI4LIEYVhGosaW/jv0UTQQZGEmzqBEH5AeUZLGHzDC0BOhkAIiJWWYlk5CdTkctrFrcwtXHprSey5ZCHhf865OJwRLuIJ+NoKlWgnaP5jWbXnL2OLJhzTI+gmBDpuYBNf+LfzQSfZuTkMqpiwiJj14x5NkiHax76p6KwaJlMFmBOYdZWcO7Ksb+IPBC4cewLV6kHU82+LNhjI5/Oy4wDXOSBNVwoo/gSFu6fhyvBDqpkOM0t+DRCmee+lGdoYvtTIMiWJQHobU+OHjRVmODPlBW8OrZ6r4rQjwSRhrOIw3ds6ZnZo1YrIiaH4+1QRKmAIvwinlXWnUVGCXXNovdzed73n3jJyd7lhpG5msaCbS6HYOZlNsSAdIBZpUdrzqnXi1yYUGYxPLZRxYpZmrxfYe9JQsHDPBnmE4QOqiIpSRsZsQkklUCDPuWaRPDxfBtf/A6vstb1wMlM56CGfzOSAhKm3xeFHZgRj9Ktr1l0o3bGW2+PbiI=
+  - secure: DtsfLotg64prLPgGaO5CiReRB9a2QoAv1f2Oq34xMSZlU8fa8bq+zZQofP+CD/yvNY8W8Mvwyk4RlqKgixsjtahgoSHbPZqdkRnUVj2yX1/yBvLFa+kXGMs7c9yY10j5W6VOvqzOB/5cZDX6xar1HzjKODQvqN+AXC/wg7euz9auBKbjFAunTC2zQ2djLrzxlpAuQOI1SjKwDx7c/lWMGHST2eIpyW4jdMGCTefMm/Nt76oHilPS1ZfYG3ruJRpHveCb7TGUXjZIWWygyfeHiz+vNGkqUKAAJBTaraCARpEcWUHPNRxqRC/cOWsmWwgEW1yYpo2muwaiWA8cvCm1HwDNgXAZbs8/4YwFJEeHFFhYLC1rQqCij5od020HcIz46yvvdMJL2aeYWicvgTnHX2mHUUowJ6kwHWfRUqvYLhAeJPv9eGtQLNmL9ff+qRuhiV6I6E0zPO5MfLIQZMQq2YAntySPhBBPftBWWBK95cYEp8qYmgGjrNWqMLHGGVXEHOloDcmC5n/bsHa5vnqlSoq0qR9yzUlz1dzVIH9hCrd7L+y9xZ7Z/nwKQ98m0MFjynCAYs4tC2iBRT7iC6AXLqrxliTeUj0FGDDFS961UrS2lSkJt8Os3Q6p8j3RgschS15nz5rrXAAi2Mya8eIgzvdU7Y0j9g8WD8IG6XViilM=
