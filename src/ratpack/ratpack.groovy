@@ -59,18 +59,30 @@ ratpack {
         }
 
         post('datasets/vk-by-vlad/explore/generate-for-aus') {
-            String inputFile = '/data/vk.data'
-            String outputFile = "/data/aus-data-${System.currentTimeMillis()}.csv"
+            String inputFilePath = '/data/vk.data'
+            String outputFilePath = "/data/aus-data-${System.currentTimeMillis()}.csv"
 
-            File dataFile = new File(inputFile)
-            String dataAsText = "[ ${dataFile.text.split('\n').join(', ')} ]"
-            def dataAsJson = new JsonSlurper().parseText(dataAsText)
+            File inputFile = new File(inputFilePath)
+            String dataAsText = "[ ${inputFile.text.split('\n').join(', ')} ]"
+            List dataAsJson = new JsonSlurper().parseText(dataAsText)
 
-            String ausData = 'city_id,graduation_year,university_id,faculty_id\n' + dataAsJson.collect( { "${it.city},${it.graduation},${it.university},${it.faculty}" } ).join('\n')
+            File outputFile = new File(outputFilePath)
+            outputFile.text = 'city_id,graduation_year,university_id,faculty_id\n'
 
-            new File(outputFile).text = ausData
+            StringBuilder dataBuffer = ''
+            int index = 0
+            while (index < dataAsJson.size()) {
+                dataBuffer += "${dataAsJson[index].city},${dataAsJson[index].graduation},${dataAsJson[index].university},${dataAsJson[index].faculty}\n"
+                index++
 
-            render "done @ $outputFile"
+                if (index % 5000 == 0) {
+                    outputFile.text += dataBuffer
+                    dataBuffer = ''
+                }
+            }
+            outputFile.text += dataBuffer
+
+            render "done @ $outputFilePath"
         }
 
         get('datasets/vk-by-vlad/explore') {
