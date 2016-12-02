@@ -63,24 +63,14 @@ ratpack {
             String outputFilePath = "/data/aus-data-${System.currentTimeMillis()}.csv"
 
             File inputFile = new File(inputFilePath)
-            String dataAsText = "[ ${inputFile.text.split('\n').join(', ')} ]"
-            List dataAsJson = new JsonSlurper().parseText(dataAsText)
 
             File outputFile = new File(outputFilePath)
             outputFile.text = 'city_id,graduation_year,university_id,faculty_id\n'
 
-            StringBuilder dataBuffer = ''
-            int index = 0
-            while (index < dataAsJson.size()) {
-                dataBuffer += "${dataAsJson[index].city},${dataAsJson[index].graduation},${dataAsJson[index].university},${dataAsJson[index].faculty}\n"
-                index++
-
-                if (index % 5000 == 0) {
-                    outputFile.text += dataBuffer
-                    dataBuffer = ''
-                }
+            inputFile.eachLine { String line ->
+                def dataAsJson = new JsonSlurper().parseText(line)
+                outputFile.append "${dataAsJson.city},${dataAsJson.graduation},${dataAsJson.university},${dataAsJson.faculty}\n"
             }
-            outputFile.text += dataBuffer
 
             render "done @ $outputFilePath"
         }
