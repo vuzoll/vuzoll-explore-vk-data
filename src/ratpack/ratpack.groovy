@@ -59,18 +59,20 @@ ratpack {
         }
 
         post('datasets/vk-by-vlad/explore/generate-for-aus') {
-            String inputFile = '/data/vk.data'
-            String outputFile = "/data/aus-data-${System.currentTimeMillis()}.csv"
+            String inputFilePath = '/data/vk.data'
+            String outputFilePath = "/data/aus-data-${System.currentTimeMillis()}.csv"
 
-            File dataFile = new File(inputFile)
-            String dataAsText = "[ ${dataFile.text.split('\n').join(', ')} ]"
-            def dataAsJson = new JsonSlurper().parseText(dataAsText)
+            File inputFile = new File(inputFilePath)
 
-            String ausData = 'city_id,graduation_year,university_id,faculty_id\n' + dataAsJson.collect( { "${it.city},${it.graduation},${it.university},${it.faculty}" } ).join('\n')
+            File outputFile = new File(outputFilePath)
+            outputFile.text = 'city_id,graduation_year,university_id,faculty_id\n'
 
-            new File(outputFile).text = ausData
+            inputFile.eachLine { String line ->
+                def dataAsJson = new JsonSlurper().parseText(line)
+                outputFile.append "${dataAsJson.city},${dataAsJson.graduation},${dataAsJson.university},${dataAsJson.faculty}\n"
+            }
 
-            render "done @ $outputFile"
+            render "done @ $outputFilePath"
         }
 
         get('datasets/vk-by-vlad/explore') {
