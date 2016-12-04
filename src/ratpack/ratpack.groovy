@@ -5,6 +5,7 @@ import static ratpack.groovy.Groovy.ratpack
 
 ratpack {
     handlers {
+
         get('datasets/vk-by-vlad/record/random') {
             MutableHeaders headers = response.headers
             headers.set('Access-Control-Allow-Origin', '*')
@@ -30,6 +31,7 @@ ratpack {
                 "raw": "${randomRecord}"
             }"""
         }
+
         get('datasets/vk-by-vlad/record/:id') {
             MutableHeaders headers = response.headers
             headers.set('Access-Control-Allow-Origin', '*')
@@ -55,6 +57,24 @@ ratpack {
                 "raw": "${record}"
             }"""
         }
+
+        post('datasets/vk-by-vlad/explore/generate-for-aus') {
+            String inputFilePath = '/data/vk.data'
+            String outputFilePath = "/data/aus-data-${System.currentTimeMillis()}.csv"
+
+            File inputFile = new File(inputFilePath)
+
+            File outputFile = new File(outputFilePath)
+            outputFile.text = 'city_id,graduation_year,university_id,faculty_id\n'
+
+            inputFile.eachLine { String line ->
+                def dataAsJson = new JsonSlurper().parseText(line)
+                outputFile.append "${dataAsJson.city},${dataAsJson.graduation},${dataAsJson.university},${dataAsJson.faculty}\n"
+            }
+
+            render "done @ $outputFilePath"
+        }
+
         get('datasets/vk-by-vlad/explore') {
             MutableHeaders headers = response.headers
             headers.set('Access-Control-Allow-Origin', '*')
