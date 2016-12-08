@@ -2,7 +2,7 @@ package com.github.vuzoll.explorevk
 
 import groovy.transform.EqualsAndHashCode
 
-@EqualsAndHashCode
+@EqualsAndHashCode(includes = 'vkId')
 class Faculty {
 
     Integer vkId
