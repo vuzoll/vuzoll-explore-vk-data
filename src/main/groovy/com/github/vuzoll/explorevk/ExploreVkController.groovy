@@ -51,7 +51,7 @@ class ExploreVkController {
             int isNotEmptyEducation = 0
 
             profile.educationRecords.collect({ new EducationRecord(it) }).each { EducationRecord educationRecord ->
-                univVsCountryFile.append "${educationRecord.university.vkId},${educationRecord.faculty.vkId},${profile.country.vkId},${profile.city.vkId}\n"
+                univVsCountryFile.append "${educationRecord?.university?.vkId?:0},${educationRecord?.faculty?.vkId?:0},${profile?.country?.vkId?:0},${profile?.city?.vkId?:0}\n"
                 isNotEmptyEducation = 1
             }
 
