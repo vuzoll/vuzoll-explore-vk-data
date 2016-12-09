@@ -1,11 +1,13 @@
 package com.github.vuzoll.explorevk
 
 import groovy.json.JsonSlurper
+import groovy.util.logging.Slf4j
 import org.springframework.web.bind.annotation.*
 
 import java.util.concurrent.TimeUnit
 
 @RestController
+@Slf4j
 class ExploreVkController {
 
     static String DATA_FILE_PATH = System.getenv('EXPLORE_VK_DATA_FILE_PATH') ?: '/data/vk.data'
@@ -26,17 +28,21 @@ class ExploreVkController {
 
     @RequestMapping(path = '/explore', method = RequestMethod.POST)
     @ResponseBody ExploreResponse explore() {
+        log.info 'Generating exploration data...'
+
         long startTime = System.currentTimeMillis()
         int dataSetSize = 0
         int nonEmptyEducationRecords = 0
-        int univVsCountrySize = 0;
+        int univVsCountrySize = 0
 
         Set<University> universities = []
         Set<Faculty> faculties = []
         Set<Country> countries = []
         Set<City> cities = []
 
+        log.info "Generating $univVsCountryFile.path..."
         if (univVsCountryFile.exists()) {
+            log.warn "Removing existant $univVsCountryFile.path..."
             univVsCountryFile.delete()
         }
         univVsCountryFile.createNewFile()
@@ -53,6 +59,8 @@ class ExploreVkController {
             }
 
             if (isNotEmptyEducation) {
+                log.info "Get at least one education record from profile id:$profile.vkId"
+
                 nonEmptyEducationRecords++
 
                 universities += profile.educationRecords.university
@@ -64,7 +72,9 @@ class ExploreVkController {
             dataSetSize++
         }
 
+        log.info "Generating $universitiesFile.path..."
         if (universitiesFile.exists()) {
+            log.warn "Removing existant $universitiesFile.path..."
             universitiesFile.delete()
         }
         universitiesFile.createNewFile()
@@ -73,7 +83,9 @@ class ExploreVkController {
             universitiesFile.append """${university.vkId},"${university.name}"\n"""
         }
 
+        log.info "Generating $facultiesFile.path..."
         if (facultiesFile.exists()) {
+            log.warn "Removing existant $facultiesFile.path..."
             facultiesFile.delete()
         }
         facultiesFile.createNewFile()
@@ -82,7 +94,9 @@ class ExploreVkController {
             facultiesFile.append """${faculty.vkId},"${faculty.name}",${faculty.university.vkId},"${faculty.university.name}"\n"""
         }
 
+        log.info "Generating $countriesFile.path..."
         if (countriesFile.exists()) {
+            log.warn "Removing existant $countriesFile.path..."
             countriesFile.delete()
         }
         countriesFile.createNewFile()
@@ -91,7 +105,9 @@ class ExploreVkController {
             countriesFile.append """${country.vkId},"${country.name}"\n"""
         }
 
+        log.info "Generating $citiesFile.path..."
         if (citiesFile.exists()) {
+            log.warn "Removing existant $citiesFile.path..."
             citiesFile.delete()
         }
         citiesFile.createNewFile()
