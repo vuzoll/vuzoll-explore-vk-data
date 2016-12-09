@@ -29,6 +29,7 @@ class ExploreVkController {
         long startTime = System.currentTimeMillis()
         int dataSetSize = 0
         int nonEmptyEducationRecords = 0
+        int univVsCountrySize = 0;
 
         Set<University> universities = []
         Set<Faculty> faculties = []
@@ -43,19 +44,23 @@ class ExploreVkController {
         dataFile.eachLine { String line ->
             VkProfile profile = new VkProfile(jsonSlurper.parseText(line))
 
-            universities += profile.educationRecords.university
-            faculties += profile.educationRecords.faculty
-            countries += profile.country
-            cities += profile.city
-
-            int isNotEmptyEducation = 0
+            boolean isNotEmptyEducation = false
 
             profile.educationRecords.collect({ new EducationRecord(it) }).each { EducationRecord educationRecord ->
                 univVsCountryFile.append "${educationRecord?.university?.vkId?:0},${educationRecord?.faculty?.vkId?:0},${profile?.country?.vkId?:0},${profile?.city?.vkId?:0}\n"
-                isNotEmptyEducation = 1
+                isNotEmptyEducation = true
+                univVsCountrySize++
             }
 
-            nonEmptyEducationRecords += isNotEmptyEducation
+            if (isNotEmptyEducation) {
+                nonEmptyEducationRecords++
+
+                universities += profile.educationRecords.university
+                faculties += profile.educationRecords.faculty
+                countries += profile.country
+                cities += profile.city
+            }
+
             dataSetSize++
         }
 
@@ -92,9 +97,9 @@ class ExploreVkController {
         citiesFile.createNewFile()
         citiesFile.text = 'id,name,country_id,country_name\n'
         cities.findAll({ it != null }).sort { it.vkId }.each { City city ->
-            citiesFile.append """${city.vkId},"${city.name}",${city.country.vkId},"${city.country.name}"\n"""
+            citiesFile.append """${city.vkId},"${city.name}",${city?.country?.vkId?:0},"${city?.country?.name}"\n"""
         }
 
-        return new ExploreResponse(timeTaken: TimeUnit.SECONDS.convert(System.currentTimeMillis() - startTime, TimeUnit.MILLISECONDS), dataSetSize: dataSetSize, nonEmptyEducationRecords: nonEmptyEducationRecords)
+        return new ExploreResponse(timeTaken: TimeUnit.SECONDS.convert(System.currentTimeMillis() - startTime, TimeUnit.MILLISECONDS), dataSetSize: dataSetSize, nonEmptyEducationRecords: nonEmptyEducationRecords, univVsCountrySize: univVsCountrySize)
     }
 }
