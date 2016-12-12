@@ -91,7 +91,7 @@ class ExploreVkController {
         facultiesFile.createNewFile()
         facultiesFile.text = 'id,name,university_id,university_name\n'
         faculties.findAll({ it != null }).collect({ new Faculty(it) }).sort { it.vkId }.each { Faculty faculty ->
-            facultiesFile.append """${faculty.vkId},"${faculty.name}",${faculty.university.vkId},"${faculty.university.name}"\n"""
+            facultiesFile.append """${faculty.vkId},"${faculty.name}",${faculty?.university?.vkId?:0},"${faculty?.university?.name}"\n"""
         }
 
         log.info "Generating $countriesFile.path..."
