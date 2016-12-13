@@ -10,11 +10,14 @@ DockerHub - https://hub.docker.com/r/vuzoll/vuzoll-explore-vk-data/
 
 [source,shell]
 ----
+mkdir /data
+mkdir /logs
+
 docker ps # to determine if container is already running
 docker kill $CONTAINER_ID # if needed
 
 docker pull vuzoll/vuzoll-explore-vk-data:$TAG # to load specific image
-docker run -dit -p 8081:8080 -v /data:/data vuzoll/vuzoll-explore-vk-data:$TAG # to start specific image
+docker run -dit -p 8081:8080 -v /data:/data -v /logs:/logs vuzoll/vuzoll-explore-vk-data:$TAG # to start specific image
 ----
 
 == HOWTO: check that service is up
