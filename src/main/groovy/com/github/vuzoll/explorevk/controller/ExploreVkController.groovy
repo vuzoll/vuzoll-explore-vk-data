@@ -111,7 +111,7 @@ class ExploreVkController {
         log.info "Generating $facultiesFile.path..."
         facultiesFile.text = 'id,name,university_id,university_name,city,country,records_count\n'
         faculties.findAll({ it != null }).sort { -facultiesSizes[it] }.each { Faculty faculty ->
-            facultiesFile.append """${faculty.vkId},"${faculty.name}",${faculty.university?.vkId?:0},"${faculty.university?.name},${faculty.university?.city?.name},${faculty.university?.country?.name},${facultiesSizes[faculty]}\n"""
+            facultiesFile.append """${faculty.vkId},"${faculty.name}",${faculty.university?.vkId?:0},"${faculty.university?.name}",${faculty.university?.city?.name},${faculty.university?.country?.name},${facultiesSizes[faculty]}\n"""
         }
 
         File countriesFile = reportFilesService.createEmptyFile("$EXPLORATION_DIRECTORY_PATH/$COUNTRIES_FILE_NAME")
