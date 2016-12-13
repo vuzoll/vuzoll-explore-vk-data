@@ -126,7 +126,7 @@ class ExploreVkController {
         citiesFile.createNewFile()
         citiesFile.text = 'id,name,country_name\n'
         cities.findAll({ it != null }).sort { it.vkId }.each { City city ->
-            citiesFile.append """${city.vkId},"${city.name}",${city.country?.vkId?:0},"${city.country?.name}"\n"""
+            citiesFile.append """${city.vkId},"${city.name}","${city.country?.name}"\n"""
         }
 
         return new ExploreResponse(timeTaken: TimeUnit.SECONDS.convert(System.currentTimeMillis() - startTime, TimeUnit.MILLISECONDS), dataSetSize: dataSetSize, nonEmptyEducationRecords: nonEmptyEducationRecords, univVsCountrySize: univVsCountrySize)
