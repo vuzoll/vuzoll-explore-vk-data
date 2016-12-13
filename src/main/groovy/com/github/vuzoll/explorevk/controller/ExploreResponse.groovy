@@ -1,4 +1,4 @@
-package com.github.vuzoll.explorevk
+package com.github.vuzoll.explorevk.controller
 
 class ExploreResponse {
 
