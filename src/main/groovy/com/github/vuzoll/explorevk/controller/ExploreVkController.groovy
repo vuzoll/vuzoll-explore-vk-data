@@ -35,16 +35,37 @@ class ExploreVkController {
     ReportFilesService reportFilesService
 
     @RequestMapping(path = '/explore', method = RequestMethod.POST)
-    @ResponseBody ExploreResponse explore() {
-        log.info 'Generating exploration data...'
+    @ResponseBody ExploreResponse explore(@RequestBody ExploreRequest exploreRequest) {
+        log.info "Receive explore request: $exploreRequest"
 
         long startTime = System.currentTimeMillis()
         int dataSetSize = 0
         int nonEmptyEducationRecords = 0
         int univVsCountrySize = 0
 
-        Set<University> universities = []
-        Set<Faculty> faculties = []
+        Map<University, Integer> universitiesSizes = [:]
+        Map<Faculty, Integer> facultiesSizes = [:]
+
+        dataFile.eachLine { String line ->
+            VkProfile profile = new VkProfile(jsonSlurper.parseText(line))
+
+            profile.educationRecords
+                    .collect({ new EducationRecord(it) })
+                    .findAll({ it?.university?.country != null && it?.university?.country == UKRAINE })
+                    .each { EducationRecord educationRecord ->
+                        universitiesSizes[educationRecord.university] = universitiesSizes.getOrDefault(educationRecord.university, 0) + 1
+                        if (educationRecord.faculty) {
+                            facultiesSizes[educationRecord.faculty] = facultiesSizes.getOrDefault(educationRecord.faculty, 0) + 1
+                        }
+                    }
+        }
+
+        Integer universitiesThreshold = exploreRequest.topNUniversitiesLimit ? universitiesSizes.values().sort().reverse()[exploreRequest.topNUniversitiesLimit] : 0
+        Set<University> universities = universitiesSizes.findAll({ university, recordsCount -> recordsCount >= universitiesThreshold }).keySet()
+
+        Integer facultiesThreshold = exploreRequest.topNFacultiesLimit ? facultiesSizes.values().sort().reverse()[exploreRequest.topNFacultiesLimit] : 0
+        Set<Faculty> faculties = facultiesSizes.findAll({ faculty, recordsCount -> recordsCount >= facultiesThreshold }).keySet()
+
         Set<Country> countries = []
         Set<City> cities = []
 
@@ -58,13 +79,11 @@ class ExploreVkController {
 
             profile.educationRecords
                     .collect({ new EducationRecord(it) })
-                    .findAll({ it?.university?.country != null && it?.university?.country == UKRAINE })
+                    .findAll({ it.university?.country != null && it.university?.country == UKRAINE })
+                    .findAll({ universities.contains(it.university) && faculties.contains(it.faculty) })
                     .each { EducationRecord educationRecord ->
                         univVsCountryFile.append "${profile?.city?.vkId?:0},${profile?.country?.vkId?:0},${educationRecord.university?.vkId?:0},${educationRecord.faculty?.vkId?:0},${educationRecord.university?.city?.vkId?:0},${educationRecord.university?.country?.vkId?:0}\n"
                         isNotEmptyEducation = true
-
-                        universities += educationRecord.university
-                        faculties += educationRecord.faculty
 
                         univVsCountrySize++
                     }
@@ -83,16 +102,16 @@ class ExploreVkController {
 
         File universitiesFile = reportFilesService.createEmptyFile("$EXPLORATION_DIRECTORY_PATH/$UNIVERSITIES_FILE_NAME")
         log.info "Generating $universitiesFile.path..."
-        universitiesFile.text = 'id,name,city,country\n'
-        universities.findAll({ it != null }).sort { it.vkId }.each { University university ->
-            universitiesFile.append """${university.vkId},"${university.name}",${university.city?.name},${university.country?.name}\n"""
+        universitiesFile.text = 'id,name,city,country,records_count\n'
+        universities.findAll({ it != null }).sort { -universitiesSizes[it] }.each { University university ->
+            universitiesFile.append """${university.vkId},"${university.name}",${university.city?.name},${university.country?.name},${universitiesSizes[university]}\n"""
         }
 
         File facultiesFile = reportFilesService.createEmptyFile("$EXPLORATION_DIRECTORY_PATH/$FACULTIES_FILE_NAME")
         log.info "Generating $facultiesFile.path..."
-        facultiesFile.text = 'id,name,university_id,university_name,city,country\n'
-        faculties.findAll({ it != null }).sort { it.vkId }.each { Faculty faculty ->
-            facultiesFile.append """${faculty.vkId},"${faculty.name}",${faculty.university?.vkId?:0},"${faculty.university?.name},${faculty.university?.city?.name},${faculty.university?.country?.name}\n"""
+        facultiesFile.text = 'id,name,university_id,university_name,city,country,records_count\n'
+        faculties.findAll({ it != null }).sort { -facultiesSizes[it] }.each { Faculty faculty ->
+            facultiesFile.append """${faculty.vkId},"${faculty.name}",${faculty.university?.vkId?:0},"${faculty.university?.name},${faculty.university?.city?.name},${faculty.university?.country?.name},${facultiesSizes[faculty]}\n"""
         }
 
         File countriesFile = reportFilesService.createEmptyFile("$EXPLORATION_DIRECTORY_PATH/$COUNTRIES_FILE_NAME")
