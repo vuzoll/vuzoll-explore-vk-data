@@ -49,15 +49,18 @@ class ExploreVkController {
         dataFile.eachLine { String line ->
             VkProfile profile = new VkProfile(jsonSlurper.parseText(line))
 
-            profile.educationRecords
-                    .collect({ new EducationRecord(it) })
-                    .findAll({ it?.university?.country != null && it?.university?.country == UKRAINE })
-                    .each { EducationRecord educationRecord ->
-                        universitiesSizes[educationRecord.university] = universitiesSizes.getOrDefault(educationRecord.university, 0) + 1
-                        if (educationRecord.faculty) {
-                            facultiesSizes[educationRecord.faculty] = facultiesSizes.getOrDefault(educationRecord.faculty, 0) + 1
+            if (profile.country) {
+                profile.educationRecords
+                        .collect({ new EducationRecord(it) })
+                        .findAll({ it?.university?.country != null && it?.university?.country == UKRAINE })
+                        .each { EducationRecord educationRecord ->
+                            universitiesSizes[educationRecord.university] = universitiesSizes.getOrDefault(educationRecord.university, 0) + 1
+                            if (educationRecord.faculty) {
+                                facultiesSizes[educationRecord.faculty] = facultiesSizes.getOrDefault(educationRecord.faculty, 0) + 1
+                            }
                         }
-                    }
+
+            }
         }
 
         Integer universitiesThreshold = exploreRequest.topNUniversitiesLimit ? universitiesSizes.values().sort().reverse()[exploreRequest.topNUniversitiesLimit] : 0
@@ -75,29 +78,32 @@ class ExploreVkController {
         dataFile.eachLine { String line ->
             VkProfile profile = new VkProfile(jsonSlurper.parseText(line))
 
-            boolean isNotEmptyEducation = false
+            if (profile.country) {
+                boolean isNotEmptyEducation = false
 
-            profile.educationRecords
-                    .collect({ new EducationRecord(it) })
-                    .findAll({ it.university?.country != null && it.university?.country == UKRAINE })
-                    .findAll({ universities.contains(it.university) && faculties.contains(it.faculty) })
-                    .each { EducationRecord educationRecord ->
-                        univVsCountryFile.append "${profile?.city?.vkId?:0},${profile?.country?.vkId?:0},${educationRecord.university?.vkId?:0},${educationRecord.faculty?.vkId?:0},${educationRecord.university?.city?.vkId?:0},${educationRecord.university?.country?.vkId?:0}\n"
-                        isNotEmptyEducation = true
+                profile.educationRecords
+                        .collect({ new EducationRecord(it) })
+                        .findAll({ it.university?.country != null && it.university?.country == UKRAINE })
+                        .findAll({ universities.contains(it.university) && faculties.contains(it.faculty) })
+                        .each { EducationRecord educationRecord ->
+                            univVsCountryFile.append "${profile?.city?.vkId?:0},${profile?.country?.vkId?:0},${educationRecord.university?.vkId?:0},${educationRecord.faculty?.vkId?:0},${educationRecord.university?.city?.vkId?:0},${educationRecord.university?.country?.vkId?:0}\n"
+                            isNotEmptyEducation = true
+        
+                            univVsCountrySize++
+                        }
 
-                        univVsCountrySize++
-                    }
+                if (isNotEmptyEducation) {
+                    log.debug "Get at least one education record from profile id:$profile.vkId"
 
-            if (isNotEmptyEducation) {
-                log.debug "Get at least one education record from profile id:$profile.vkId"
+                    nonEmptyEducationRecords++
 
-                nonEmptyEducationRecords++
+                    countries += profile.country
+                    cities += profile.city
+                }
 
-                countries += profile.country
-                cities += profile.city
+                dataSetSize++
+
             }
-
-            dataSetSize++
         }
 
         File universitiesFile = reportFilesService.createEmptyFile("$EXPLORATION_DIRECTORY_PATH/$UNIVERSITIES_FILE_NAME")
