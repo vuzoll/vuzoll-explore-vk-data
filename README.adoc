@@ -24,6 +24,16 @@ docker run -dit -p 8081:8080 -v /data:/data -v /logs:/logs vuzoll/vuzoll-explore
 
 POST to http://138.68.145.93:8081/explore
 
+Following constaints are avaiable for POST body:
+
+[source]
+----
+{
+  "topNUniversitiesLimit": ?,
+  "topNFacultiesLimit": ?
+}
+----
+
 Following environment variable are avaiable for global service configuration:
 
 EXPLORE_VK_DATA_FILE_PATH - path to data file (default is /data/vk.data)
