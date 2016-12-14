@@ -64,7 +64,7 @@ class ExploreVkController {
         Set<University> universities = universitiesSizes.findAll({ university, recordsCount -> recordsCount >= universitiesThreshold }).keySet()
 
         Integer facultiesThreshold = exploreRequest.topNFacultiesLimit ? facultiesSizes.values().sort().reverse()[exploreRequest.topNFacultiesLimit] : 0
-        Set<Faculty> faculties = facultiesSizes.findAll({ faculty, recordsCount -> recordsCount >= facultiesThreshold }).keySet()
+        Set<Faculty> faculties = facultiesSizes.findAll({ faculty, recordsCount -> universities.contains(faculty.university) && recordsCount >= facultiesThreshold }).keySet()
 
         Set<Country> countries = []
         Set<City> cities = []
