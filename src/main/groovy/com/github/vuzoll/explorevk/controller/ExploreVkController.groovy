@@ -63,10 +63,16 @@ class ExploreVkController {
             }
         }
 
-        Integer universitiesThreshold = exploreRequest.topNUniversitiesLimit ? universitiesSizes.values().sort().reverse()[exploreRequest.topNUniversitiesLimit] : 0
+        Integer universitiesThreshold = 0
+        if (exploreRequest.topNUniversitiesLimit && exploreRequest.topNUniversitiesLimit > 0 && exploreRequest.topNUniversitiesLimit < universitiesSizes.size()) {
+            universitiesThreshold = universitiesSizes.values().sort().reverse()[exploreRequest.topNUniversitiesLimit - 1]
+        }
         Set<University> universities = universitiesSizes.findAll({ university, recordsCount -> recordsCount >= universitiesThreshold }).keySet()
 
-        Integer facultiesThreshold = exploreRequest.topNFacultiesLimit ? facultiesSizes.values().sort().reverse()[exploreRequest.topNFacultiesLimit] : 0
+        Integer facultiesThreshold = 0
+        if (exploreRequest.topNFacultiesLimit && exploreRequest.topNFacultiesLimit > 0 && exploreRequest.topNFacultiesLimit < facultiesSizes.size()) {
+            facultiesThreshold = facultiesSizes.values().sort().reverse()[exploreRequest.topNFacultiesLimit - 1]
+        }
         Set<Faculty> faculties = facultiesSizes.findAll({ faculty, recordsCount -> universities.contains(faculty.university) && recordsCount >= facultiesThreshold }).keySet()
 
         Set<Country> countries = []
