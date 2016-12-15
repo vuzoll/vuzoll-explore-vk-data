@@ -63,10 +63,16 @@ class ExploreVkController {
             }
         }
 
-        Integer universitiesThreshold = exploreRequest.topNUniversitiesLimit ? universitiesSizes.values().sort().reverse()[exploreRequest.topNUniversitiesLimit] : 0
+        Integer universitiesThreshold = 0
+        if (exploreRequest.topNUniversitiesLimit && exploreRequest.topNUniversitiesLimit > 0 && exploreRequest.topNUniversitiesLimit < universitiesSizes.size()) {
+            universitiesThreshold = universitiesSizes.values().sort().reverse()[exploreRequest.topNUniversitiesLimit - 1]
+        }
         Set<University> universities = universitiesSizes.findAll({ university, recordsCount -> recordsCount >= universitiesThreshold }).keySet()
 
-        Integer facultiesThreshold = exploreRequest.topNFacultiesLimit ? facultiesSizes.values().sort().reverse()[exploreRequest.topNFacultiesLimit] : 0
+        Integer facultiesThreshold = 0
+        if (exploreRequest.topNFacultiesLimit && exploreRequest.topNFacultiesLimit > 0 && exploreRequest.topNFacultiesLimit < facultiesSizes.size()) {
+            facultiesThreshold = facultiesSizes.values().sort().reverse()[exploreRequest.topNFacultiesLimit - 1]
+        }
         Set<Faculty> faculties = facultiesSizes.findAll({ faculty, recordsCount -> universities.contains(faculty.university) && recordsCount >= facultiesThreshold }).keySet()
 
         Set<Country> countries = []
@@ -74,7 +80,7 @@ class ExploreVkController {
 
         File univVsCountryFile = reportFilesService.createEmptyFile("$EXPLORATION_DIRECTORY_PATH/$UNIV_VS_COUNTRY_FILE_NAME")
         log.info "Generating $univVsCountryFile.path..."
-        univVsCountryFile.text = 'person_city_id,person_country_id,faculty_id,university_id,university_city_id,university_country_id\n'
+        univVsCountryFile.text = 'person_id,person_country_id,person_city_id,graduation_year,university_id,faculty_id,university_country_id,university_city_id\n'
         dataFile.eachLine { String line ->
             VkProfile profile = new VkProfile(jsonSlurper.parseText(line))
 
@@ -86,7 +92,7 @@ class ExploreVkController {
                         .findAll({ it.university?.country != null && it.university?.country == UKRAINE })
                         .findAll({ universities.contains(it.university) && faculties.contains(it.faculty) })
                         .each { EducationRecord educationRecord ->
-                            univVsCountryFile.append "${profile?.city?.vkId?:0},${profile?.country?.vkId?:0},${educationRecord.university?.vkId?:0},${educationRecord.faculty?.vkId?:0},${educationRecord.university?.city?.vkId?:0},${educationRecord.university?.country?.vkId?:0}\n"
+                            univVsCountryFile.append "${profile.vkId},${profile.country.vkId},${profile.city?.vkId?:0},${educationRecord.graduationYear?:0},${educationRecord.university.vkId},${educationRecord.faculty?.vkId?:0},${educationRecord.university.country.vkId},${educationRecord.university.city?.vkId?:0}\n"
                             isNotEmptyEducation = true
         
                             univVsCountrySize++
