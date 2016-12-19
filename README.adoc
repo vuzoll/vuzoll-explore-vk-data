@@ -10,13 +10,42 @@ DockerHub - https://hub.docker.com/r/vuzoll/vuzoll-explore-vk-data/
 
 [source,shell]
 ----
+mkdir /data
+mkdir /logs
+
 docker ps # to determine if container is already running
 docker kill $CONTAINER_ID # if needed
 
 docker pull vuzoll/vuzoll-explore-vk-data:$TAG # to load specific image
-docker run -dit -p 5050:5050 -v /data:/data vuzoll/vuzoll-explore-vk-data:$TAG # to start specific image
+docker run -dit -p 8081:8080 -v /data:/data -v /logs:/logs vuzoll/vuzoll-explore-vk-data:$TAG # to start specific image
 ----
 
 == HOWTO: check that service is up
 
-Go to http://138.68.145.93:5050/datasets/vk-by-vlad/explore
+POST to http://138.68.145.93:8081/explore
+
+Following constaints are avaiable for POST body:
+
+[source]
+----
+{
+  "topNUniversitiesLimit": ?,
+  "topNFacultiesLimit": ?
+}
+----
+
+Following environment variable are avaiable for global service configuration:
+
+EXPLORE_VK_DATA_FILE_PATH - path to data file (default is /data/vk.data)
+
+EXPLORE_VK_EXPLORATION_DIRECTORY_PATH - folder to place exploration files (default is /data)
+
+EXPLORE_VK_UNIV_VS_COUNTRY_FILE_NAME - file name to place exploration data (default is univ-vs-country.csv)
+
+EXPLORE_VK_UNIVERSITIES_FILE_NAME - file name to place universities dictionary (default is universities.csv)
+
+EXPLORE_VK_FACULTIES_FILE_NAME - file name to place faculties dictionary (default is faculties.csv)
+
+EXPLORE_VK_COUNTRIES_FILE_NAME - file name to place countries dictionary (default is countries.csv)
+
+EXPLORE_VK_CITIES_FILE_NAME - file name to place cities dictionary (default is cities.csv)

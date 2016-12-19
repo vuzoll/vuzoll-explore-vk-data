@@ -1,21 +1,30 @@
-version = '0.4'
-
 buildscript {
     repositories {
         jcenter()
     }
     dependencies {
-        classpath 'io.ratpack:ratpack-gradle:1.4.4'
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.4.2.RELEASE'
     }
 }
 
-apply plugin: 'io.ratpack.ratpack-groovy'
+apply plugin: 'groovy'
 apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+
+version = '0.5'
 
 repositories {
     jcenter()
 }
 
 dependencies {
-    runtime 'org.slf4j:slf4j-simple:1.7.21'
+    compile 'org.springframework.boot:spring-boot-starter-web'
+
+    compile 'org.codehaus.groovy:groovy-all'
+
+    compile 'org.slf4j:slf4j-api'
+    compile 'ch.qos.logback:logback-classic'
 }
+
+apply plugin: 'application'
+mainClassName = 'com.github.vuzoll.explorevk.Application'
