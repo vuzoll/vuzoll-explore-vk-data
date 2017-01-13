@@ -1,0 +1,13 @@
+= HOWTO: run service
+
+POST to http://138.68.145.93:8081/explore
+
+Following constaints are avaiable for POST body:
+
+[source]
+----
+{
+  "topNUniversitiesLimit": ?,
+  "topNFacultiesLimit": ?
+}
+----
