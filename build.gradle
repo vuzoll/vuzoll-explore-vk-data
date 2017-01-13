@@ -25,3 +25,6 @@ buildScan {
     licenseAgreementUrl = 'https://gradle.com/terms-of-service'
     licenseAgree = 'yes'
 }
+
+apply plugin: 'application'
+mainClassName = 'com.github.vuzoll.explorevk.Application'
