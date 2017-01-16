@@ -1,6 +1,6 @@
 package com.github.vuzoll.explorevk.services
 
-class VkExploration {
+class VkDatasetExploration {
 
     Integer datasetSize
 }

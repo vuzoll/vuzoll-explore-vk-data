@@ -13,13 +13,15 @@ repositories {
 }
 
 dependencies {
+    compile 'org.codehaus.groovy:groovy-all'
+
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.data:spring-data-mongodb'
 
-    compile 'org.codehaus.groovy:groovy-all'
-
     compile 'org.slf4j:slf4j-api'
     compile 'ch.qos.logback:logback-classic'
+
+    compile 'org.apache.commons:commons-lang3:3.5'
 }
 
 buildScan {
