@@ -13,7 +13,7 @@ class ExploreVkController {
     @Autowired
     ExploreVkService exploreVkService
 
-    @PostMapping(path = '/explore')
+    @GetMapping(path = '/explore')
     @ResponseBody VkExploration explore() {
         log.info 'Receive exploration request'
 

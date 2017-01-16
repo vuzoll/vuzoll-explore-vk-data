@@ -32,6 +32,10 @@ EXPLORE_VK_MONGO_USERNAME - username for authentication to mongodb (default is e
 
 EXPLORE_VK_MONGO_PASSWORD - password for authentication to mongodb
 
+EXPLORE_VK_ROOT_LOG_LEVEL - logging level for third-party libraries (default is INFO)
+
+EXPLORE_VK_VUZOLL_LOG_LEVEL - logging level for service code (default is INFO)
+
 == Start service
 
 [source,shell]
