@@ -1,9 +1,9 @@
-package com.github.vuzoll.explorevk.domain
+package com.github.vuzoll.explorevk.domain.vk
 
 import groovy.transform.EqualsAndHashCode
 
 @EqualsAndHashCode(includes = 'vkId')
-class Country {
+class VkCity {
 
     Integer vkId
     String name

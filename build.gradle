@@ -1,15 +1,10 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.4.2.RELEASE'
-    }
+plugins {
+    id 'com.gradle.build-scan' version '1.4'
+    id 'org.springframework.boot' version '1.4.3.RELEASE'
 }
 
 apply plugin: 'groovy'
 apply plugin: 'idea'
-apply plugin: 'org.springframework.boot'
 
 version = '0.6-SNAPSHOT'
 
@@ -19,11 +14,17 @@ repositories {
 
 dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.data:spring-data-mongodb'
 
     compile 'org.codehaus.groovy:groovy-all'
 
     compile 'org.slf4j:slf4j-api'
     compile 'ch.qos.logback:logback-classic'
+}
+
+buildScan {
+    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
+    licenseAgree = 'yes'
 }
 
 apply plugin: 'application'
