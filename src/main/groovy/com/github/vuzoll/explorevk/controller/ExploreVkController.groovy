@@ -2,7 +2,7 @@ package com.github.vuzoll.explorevk.controller
 
 import com.github.vuzoll.explorevk.domain.vk.VkProfile
 import com.github.vuzoll.explorevk.services.ExploreVkService
-import com.github.vuzoll.explorevk.services.VkDatasetExploration
+import com.github.vuzoll.explorevk.domain.exploration.VkDatasetExploration
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
