@@ -29,7 +29,7 @@ class ExploreVkService {
         log.info 'Calculating countries distribution...'
         Map<VkCountry, Integer> countriesDistribution = [:]
 
-        int pageSize = 1000
+        int pageSize = 100
         int numberOfDataPages = vkDatasetExploration.datasetSize / pageSize + 1
         (0..numberOfDataPages).each { int dataPageIndex ->
             log.info "Processing data page ${dataPageIndex} / ${numberOfDataPages}..."
