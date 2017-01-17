@@ -21,7 +21,7 @@ dependencies {
     compile 'org.slf4j:slf4j-api'
     compile 'ch.qos.logback:logback-classic'
 
-    compile 'org.apache.commons:commons-lang3'
+    compile 'org.apache.commons:commons-lang3:3.5'
 
     compile 'joda-time:joda-time'
 }
