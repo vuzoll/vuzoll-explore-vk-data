@@ -3,7 +3,7 @@ package com.github.vuzoll.explorevk.domain.exploration
 import groovy.transform.EqualsAndHashCode
 
 @EqualsAndHashCode(includes = 'object')
-class DistributionEntry<T> {
+class DistributionEntry<T> implements Comparable<DistributionEntry<T>> {
 
     T object
     int count
@@ -15,5 +15,10 @@ class DistributionEntry<T> {
 
     void inc() {
         count++
+    }
+
+    @Override
+    int compareTo(DistributionEntry<T> o) {
+        o.count <=> this.count
     }
 }
