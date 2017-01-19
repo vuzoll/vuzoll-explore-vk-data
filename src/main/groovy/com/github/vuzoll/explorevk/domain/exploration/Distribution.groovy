@@ -2,9 +2,15 @@ package com.github.vuzoll.explorevk.domain.exploration
 
 class Distribution<T> {
 
-    int totalCount = 0
-    int nullCount = 0
-    SortedSet<DistributionEntry<T>> distributionEntries = new TreeSet<>()
+    int totalCount
+    int nullCount
+    SortedSet<DistributionEntry<T>> distributionEntries
+
+    Distribution() {
+        totalCount = 0
+        nullCount = 0
+        distributionEntries = new TreeSet<>()
+    }
 
     void add(T object) {
         totalCount++
