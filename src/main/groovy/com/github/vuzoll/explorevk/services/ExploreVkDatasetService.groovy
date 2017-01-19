@@ -17,6 +17,9 @@ import org.joda.time.format.PeriodFormatterBuilder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.data.mongodb.core.query.Criteria
+import org.springframework.data.mongodb.core.query.CriteriaDefinition
+import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Service
 
 import java.time.LocalDateTime
@@ -61,7 +64,7 @@ class ExploreVkDatasetService {
             vkDatasetExploration.facultiesDistribution = new Distribution<>()
             vkDatasetExploration.graduationYearDistribution = new Distribution<>()
 
-            mongoTemplate.stream('{}', VkProfile).eachWithIndex { VkProfile vkProfile, int index ->
+            mongoTemplate.stream(new Query(), VkProfile).eachWithIndex { VkProfile vkProfile, int index ->
                 if (index % 100 == 0) {
                     log.info "ExplorationId=${vkDatasetExploration.id}: processing record ${index} / ${vkDatasetExploration.datasetSize}..."
 
