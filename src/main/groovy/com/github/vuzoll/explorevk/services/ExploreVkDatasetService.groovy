@@ -1,10 +1,12 @@
 package com.github.vuzoll.explorevk.services
 
-import com.github.vuzoll.explorevk.domain.exploration.DistributionEntry
+import com.github.vuzoll.explorevk.domain.exploration.Distribution
 import com.github.vuzoll.explorevk.domain.exploration.ExplorationStatus
 import com.github.vuzoll.explorevk.domain.exploration.VkDatasetExploration
-import com.github.vuzoll.explorevk.domain.vk.VkCountry
+import com.github.vuzoll.explorevk.domain.vk.VkFaculty
 import com.github.vuzoll.explorevk.domain.vk.VkProfile
+import com.github.vuzoll.explorevk.domain.vk.VkUniversity
+import com.github.vuzoll.explorevk.domain.vk.VkUniversityRecord
 import com.github.vuzoll.explorevk.repository.exploration.VkDatasetExplorationRepository
 import com.github.vuzoll.explorevk.repository.vk.VkProfileRepository
 import groovy.util.logging.Slf4j
@@ -14,6 +16,10 @@ import org.joda.time.format.PeriodFormatter
 import org.joda.time.format.PeriodFormatterBuilder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.data.mongodb.core.query.Criteria
+import org.springframework.data.mongodb.core.query.CriteriaDefinition
+import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Service
 
 import java.time.LocalDateTime
@@ -30,6 +36,9 @@ class ExploreVkDatasetService {
 
     @Autowired
     VkProfileRepository vkProfileRepository
+
+    @Autowired
+    MongoTemplate mongoTemplate
 
     @Autowired
     VkDatasetExplorationRepository vkDatasetExplorationRepository
@@ -49,24 +58,27 @@ class ExploreVkDatasetService {
             vkDatasetExploration.timeTaken = toDurationString(System.currentTimeMillis() - vkDatasetExploration.startTimestamp)
             vkDatasetExplorationRepository.save vkDatasetExploration
 
-            Map<VkCountry, Integer> countriesDistribution = [:]
+            vkDatasetExploration.countriesDistribution = new Distribution<>()
+            vkDatasetExploration.citiesDistribution = new Distribution<>()
+            vkDatasetExploration.universitiesDistribution = new Distribution<>()
+            vkDatasetExploration.facultiesDistribution = new Distribution<>()
+            vkDatasetExploration.graduationYearDistribution = new Distribution<>()
 
-            int pageSize = 100
-            int numberOfDataPages = vkDatasetExploration.datasetSize / pageSize + 1
+            mongoTemplate.stream(new Query(), VkProfile).eachWithIndex { VkProfile vkProfile, int index ->
+                if (index % 100 == 0) {
+                    log.info "ExplorationId=${vkDatasetExploration.id}: processing record ${index} / ${vkDatasetExploration.datasetSize}..."
 
-            (0..numberOfDataPages).each { int dataPageIndex ->
-                log.info "ExplorationId=${vkDatasetExploration.id}: processing data page ${dataPageIndex} / ${numberOfDataPages}..."
-                vkProfileRepository.findAll(new PageRequest(dataPageIndex, pageSize)).content.country.findAll({ it != null }).each { VkCountry vkCountry ->
-                    countriesDistribution.put(vkCountry, countriesDistribution.getOrDefault(vkCountry, 0) + 1)
+                    vkDatasetExploration.lastUpdateTime = System.currentTimeMillis()
+                    vkDatasetExploration.timeTaken = toDurationString(System.currentTimeMillis() - vkDatasetExploration.startTimestamp)
+                    vkDatasetExplorationRepository.save vkDatasetExploration
                 }
 
-                vkDatasetExploration.countriesDistribution = countriesDistribution.collect({ country, count -> new DistributionEntry<>(object: country, count: count) }).sort({ -it.count })
-                vkDatasetExploration.lastUpdateTime = System.currentTimeMillis()
-                vkDatasetExploration.timeTaken = toDurationString(System.currentTimeMillis() - vkDatasetExploration.startTimestamp)
-                vkDatasetExplorationRepository.save vkDatasetExploration
+                vkDatasetExploration.countriesDistribution.add(vkProfile.country)
+                vkDatasetExploration.citiesDistribution.add(vkProfile.city)
+                vkDatasetExploration.universitiesDistribution.add(vkProfile.universityRecords.collect(this.&toUniversity))
+                vkDatasetExploration.facultiesDistribution.add(vkProfile.universityRecords.collect(this.&toFaculty))
+                vkDatasetExploration.graduationYearDistribution.add(vkProfile.universityRecords.graduationYear)
             }
-
-            vkDatasetExploration.countriesDistribution = countriesDistribution.collect({ country, count -> new DistributionEntry<>(object: country, count: count) }).sort({ -it.count })
 
             return vkDatasetExploration
         } catch (e) {
@@ -105,6 +117,44 @@ class ExploreVkDatasetService {
         log.info "Getting profile with vkId=${vkId}..."
 
         vkProfileRepository.findOneByVkId(vkId)
+    }
+
+    private VkUniversity toUniversity(VkUniversityRecord vkUniversityRecord) {
+        if (vkUniversityRecord.universityId == null) {
+            return null
+        }
+        if (vkUniversityRecord.universityName == null) {
+            return null
+        }
+        if (vkUniversityRecord.countryId == null) {
+            return null
+        }
+
+        return VkUniversity.builder()
+                .universityId(vkUniversityRecord.universityId)
+                .universityName(vkUniversityRecord.universityName)
+                .countryId(vkUniversityRecord.countryId)
+                .cityId(vkUniversityRecord.cityId)
+                .build()
+    }
+
+    private VkFaculty toFaculty(VkUniversityRecord vkUniversityRecord) {
+        VkUniversity university = toUniversity(vkUniversityRecord)
+        if (university == null) {
+            return null
+        }
+        if (vkUniversityRecord.facultyId == null) {
+            return null
+        }
+        if (vkUniversityRecord.facultyName == null) {
+            return null
+        }
+
+        return VkFaculty.builder()
+                .university(university)
+                .facultyId(vkUniversityRecord.facultyId)
+                .facultyName(vkUniversityRecord.facultyName)
+                .build()
     }
 
     static String toDurationString(long duration) {
