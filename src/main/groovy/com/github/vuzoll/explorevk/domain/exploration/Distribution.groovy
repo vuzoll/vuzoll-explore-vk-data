@@ -4,7 +4,7 @@ class Distribution<T> {
 
     int totalCount = 0
     int nullCount = 0
-    SortedSet<DistributionEntry<T>> distributionEntries = []
+    SortedSet<DistributionEntry<T>> distributionEntries = new TreeSet<>()
 
     void add(T object) {
         totalCount++
