@@ -11,7 +11,7 @@ class Distribution<T> {
         if (object == null) {
             nullCount++
         } else {
-            DistributionEntry distributionEntry = distributionEntries.get(object)
+            DistributionEntry distributionEntry = distributionEntries.find({ it.object == object })
             if (distributionEntry == null) {
                 distributionEntry = new DistributionEntry(object)
                 distributionEntries.add(distributionEntry)
