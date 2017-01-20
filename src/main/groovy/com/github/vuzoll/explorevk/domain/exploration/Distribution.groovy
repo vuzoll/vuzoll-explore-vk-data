@@ -26,7 +26,7 @@ class Distribution<T> {
         this({ it == null }, numberOfOptionsLimit)
     }
 
-    Distribution(Closure<Boolean> isNullPredicate, int numberOfOptionsLimit) {
+    Distribution(Closure<Boolean> isNullPredicate, Integer numberOfOptionsLimit) {
         this.isNullPredicate = isNullPredicate
         this.numberOfOptionsLimit = numberOfOptionsLimit
 
@@ -48,7 +48,7 @@ class Distribution<T> {
 
             numberOfOptions = distributionEntries.size()
             distribution = distributionEntries.collect({ key, value -> value }).sort()
-            if (numberOfOptionsLimit) {
+            if (numberOfOptionsLimit != null) {
                 distribution = distribution.take(numberOfOptionsLimit)
             }
             distributionEntry.count++
