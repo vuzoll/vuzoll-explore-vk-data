@@ -13,6 +13,7 @@ import com.github.vuzoll.explorevk.repository.exploration.VkDatasetExplorationRe
 import com.github.vuzoll.explorevk.repository.vk.VkProfileRepository
 import groovy.util.logging.Slf4j
 import org.apache.commons.lang3.RandomUtils
+import org.apache.commons.lang3.StringUtils
 import org.joda.time.Period
 import org.joda.time.format.PeriodFormatter
 import org.joda.time.format.PeriodFormatterBuilder
@@ -148,7 +149,7 @@ class ExploreVkDatasetService {
         if (vkUniversityRecord.universityId == null) {
             return null
         }
-        if (vkUniversityRecord.universityName == null) {
+        if (StringUtils.isBlank(vkUniversityRecord.universityName)) {
             return null
         }
         if (vkUniversityRecord.countryId == null) {
@@ -171,7 +172,7 @@ class ExploreVkDatasetService {
         if (vkUniversityRecord.facultyId == null) {
             return null
         }
-        if (vkUniversityRecord.facultyName == null) {
+        if (StringUtils.isBlank(vkUniversityRecord.facultyName)) {
             return null
         }
 

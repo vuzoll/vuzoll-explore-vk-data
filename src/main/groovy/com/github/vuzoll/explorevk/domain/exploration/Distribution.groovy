@@ -50,10 +50,10 @@ class Distribution<T> {
                 distributionEntries.put(object, distributionEntry)
             }
 
-            numberOfOptions = distributionEntries.size()
             distributionEntry.count++
 
             distribution = new TreeSet<>(distributionEntries.collect({ key, value -> value }))
+            numberOfOptions = distribution.size()
             if (numberOfOptionsLimit != null) {
                 distribution = distribution.take(numberOfOptionsLimit)
             }
