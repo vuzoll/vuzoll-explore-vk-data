@@ -10,7 +10,7 @@ class Distribution<T> {
     @Transient
     private final Map<T, DistributionEntry<T>> distributionEntries
 
-    int numberOfOptionsLimit
+    Integer numberOfOptionsLimit
 
     int totalCount
     int nullCount
@@ -19,10 +19,10 @@ class Distribution<T> {
     SortedSet<DistributionEntry<T>> distribution
 
     Distribution() {
-        this({ it == null }, Integer.MAX_VALUE)
+        this({ it == null }, null)
     }
 
-    Distribution(int numberOfOptionsLimit) {
+    Distribution(Integer numberOfOptionsLimit) {
         this({ it == null }, numberOfOptionsLimit)
     }
 
@@ -47,7 +47,10 @@ class Distribution<T> {
             DistributionEntry distributionEntry = distributionEntries.getOrDefault(object, new DistributionEntry(object))
 
             numberOfOptions = distributionEntries.size()
-            distribution = distributionEntries.collect({ key, value -> value }).sort().take(numberOfOptionsLimit)
+            distribution = distributionEntries.collect({ key, value -> value }).sort()
+            if (numberOfOptionsLimit) {
+                distribution = distribution.take(numberOfOptionsLimit)
+            }
             distributionEntry.count++
             distributionEntry.percentageTotal = distributionEntry.count / totalCount
             distributionEntry.percentageNotNull = distributionEntry.count / notNullCount

@@ -28,6 +28,8 @@ import java.time.LocalDateTime
 @Slf4j
 class ExploreVkDatasetService {
 
+    static Integer EXPLORATION_CHUNK_SIZE = System.getenv('EXPLORE_VK_EXPLORATION_CHUNK_SIZE') ? Integer.parseInt(System.getenv('EXPLORE_VK_EXPLORATION_CHUNK_SIZE')) : 100
+
     static final PeriodFormatter TIME_LIMIT_FORMAT = new PeriodFormatterBuilder()
             .appendHours().appendSuffix('h')
             .appendMinutes().appendSuffix('min')
@@ -86,7 +88,7 @@ class ExploreVkDatasetService {
             vkDatasetExplorationRepository.save vkDatasetExploration
 
             mongoTemplate.stream(new Query(), VkProfile).eachWithIndex { VkProfile vkProfile, int index ->
-                if (index % 100 == 0) {
+                if (index % EXPLORATION_CHUNK_SIZE == 0) {
                     log.info "ExplorationId=${vkDatasetExploration.id}: processing record ${index} / ${vkDatasetExploration.datasetSize}..."
 
                     vkDatasetExploration.lastUpdateTime = System.currentTimeMillis()
