@@ -62,10 +62,10 @@ class ExploreVkDatasetService {
     VkDatasetExploration exploreTopFaculties(TopFacultiesExploration topFacultiesExploration) {
         explore(topFacultiesExploration,
                 { TopFacultiesExploration exploration ->
-                    exploration.facultyDistribution = new Distribution<>(topFacultiesExploration.numberOfFacultiesToTake)
+                    exploration.facultyDistribution = new Distribution<>({ VkFaculty it -> it == null || it.university.countryId != UKRAINE_ID }, topFacultiesExploration.numberOfFacultiesToTake)
                 },
                 { TopFacultiesExploration exploration, VkProfile vkProfile ->
-                    exploration.facultyDistribution.add(vkProfile.universityRecords.collect(this.&toFaculty).findAll({ it.university.countryId ==  UKRAINE_ID }))
+                    exploration.facultyDistribution.add(vkProfile.universityRecords.collect(this.&toFaculty))
                 })
     }
 
