@@ -81,7 +81,7 @@ class ExploreVkDatasetService {
 
             log.info "ExplorationId=${vkDatasetExploration.id}: calculating dataset size..."
             vkDatasetExploration.datasetSize = vkProfileRepository.count()
-            vkDatasetExploration.lastUpdateTime = System.currentTimeMillis()
+            vkDatasetExploration.lastUpdateTime = LocalDateTime.now().toString()
             vkDatasetExploration.timeTaken = toDurationString(System.currentTimeMillis() - vkDatasetExploration.startTimestamp)
             vkDatasetExplorationRepository.save vkDatasetExploration
 
@@ -92,7 +92,7 @@ class ExploreVkDatasetService {
                 if (index % EXPLORATION_CHUNK_SIZE == 0) {
                     log.info "ExplorationId=${vkDatasetExploration.id}: processing record ${index} / ${vkDatasetExploration.datasetSize}..."
 
-                    vkDatasetExploration.lastUpdateTime = System.currentTimeMillis()
+                    vkDatasetExploration.lastUpdateTime = LocalDateTime.now().toString()
                     vkDatasetExploration.timeTaken = toDurationString(System.currentTimeMillis() - vkDatasetExploration.startTimestamp)
                     vkDatasetExplorationRepository.save vkDatasetExploration
                 }
@@ -100,8 +100,8 @@ class ExploreVkDatasetService {
                 exploreAction.call(vkDatasetExploration, vkProfile)
             }
 
-            log.error("ExplorationId=${vkDatasetExploration.id}: exploration succeeded", e)
-            vkDatasetExploration.endTime = System.currentTimeMillis()
+            log.info "ExplorationId=${vkDatasetExploration.id}: exploration succeeded"
+            vkDatasetExploration.endTime = LocalDateTime.now().toString()
             vkDatasetExploration.lastUpdateTime = vkDatasetExploration.endTime
             vkDatasetExploration.timeTaken = toDurationString(System.currentTimeMillis() - vkDatasetExploration.startTimestamp)
             vkDatasetExploration.status = ExplorationStatus.COMPLETED.toString()
@@ -111,7 +111,8 @@ class ExploreVkDatasetService {
         } catch (e) {
             log.error("ExplorationId=${vkDatasetExploration.id}: exploration failed", e)
             vkDatasetExploration.message = "Failed because of ${e.class.name}, with message: ${e.message}"
-            vkDatasetExploration.lastUpdateTime = System.currentTimeMillis()
+            vkDatasetExploration.endTime = LocalDateTime.now().toString()
+            vkDatasetExploration.lastUpdateTime = vkDatasetExploration.endTime
             vkDatasetExploration.timeTaken = toDurationString(System.currentTimeMillis() - vkDatasetExploration.startTimestamp)
             vkDatasetExploration.status = ExplorationStatus.FAILED.toString()
             vkDatasetExplorationRepository.save vkDatasetExploration
