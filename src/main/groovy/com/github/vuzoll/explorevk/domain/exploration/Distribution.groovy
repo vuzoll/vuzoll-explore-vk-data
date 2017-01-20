@@ -47,7 +47,7 @@ class Distribution<T> {
             DistributionEntry distributionEntry = distributionEntries.getOrDefault(object, new DistributionEntry(object))
 
             numberOfOptions = distributionEntries.size()
-            distribution = distributionEntry.collect({ key, value -> value }).sort().take(numberOfOptionsLimit)
+            distribution = distributionEntries.collect({ key, value -> value }).sort().take(numberOfOptionsLimit)
             distributionEntry.count++
             distributionEntry.percentageTotal = distributionEntry.count / totalCount
             distributionEntry.percentageNotNull = distributionEntry.count / notNullCount
