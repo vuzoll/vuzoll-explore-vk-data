@@ -1,9 +1,19 @@
 = HOWTO: run service
 
-GET to http://138.68.99.206:8081/explore
+POST to http://139.59.141.72:8081/explore/current-location
 
-GET to http://138.68.99.206:8081/explore/profile/random
+POST to http://139.59.141.72:8081/explore/top-faculties/{numberOfFacultiesToTake}
 
-GET to http://138.68.99.206:8081/explore/profile/id/{id}
 
-GET to http://138.68.99.206:8081/explore/profile/vkId/{vkId}
+GET to http://139.59.141.72:8081/exploration/{explorationId}
+
+GET to http://139.59.141.72:8081/exploration/last
+
+GET to http://139.59.141.72:8081/exploration/all
+
+
+GET to http://139.59.141.72:8081/explore/profile/random
+
+GET to http://139.59.141.72:8081/explore/profile/id/{id}
+
+GET to http://139.59.141.72:8081/explore/profile/vkId/{vkId}

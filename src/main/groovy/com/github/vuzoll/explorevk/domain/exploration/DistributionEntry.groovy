@@ -7,14 +7,12 @@ class DistributionEntry<T> implements Comparable<DistributionEntry<T>> {
 
     T object
     int count
+    double percentageTotal
+    double percentageNotNull
 
     DistributionEntry(T object) {
         this.object = object
         this.count = 0
-    }
-
-    void inc() {
-        count++
     }
 
     @Override

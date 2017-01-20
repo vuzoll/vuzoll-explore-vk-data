@@ -1,6 +1,8 @@
 package com.github.vuzoll.explorevk.services
 
+import com.github.vuzoll.explorevk.domain.exploration.CurrentLocationExploration
 import com.github.vuzoll.explorevk.domain.exploration.ExplorationStatus
+import com.github.vuzoll.explorevk.domain.exploration.TopFacultiesExploration
 import com.github.vuzoll.explorevk.domain.exploration.VkDatasetExploration
 import com.github.vuzoll.explorevk.repository.exploration.VkDatasetExplorationRepository
 import groovy.util.logging.Slf4j
@@ -52,13 +54,24 @@ class ExplorationService {
         return currentlyRunningExplorations.first()
     }
 
-    VkDatasetExploration startNewExploration() {
-        VkDatasetExploration vkDatasetExploration = new VkDatasetExploration()
-        vkDatasetExploration.status = ExplorationStatus.RUNNING.toString()
+    VkDatasetExploration startNewCurrentLocationExploration() {
+        CurrentLocationExploration currentLocationExploration = new CurrentLocationExploration()
+        currentLocationExploration.name = 'current location'
+        startNewExploration(currentLocationExploration, { vkDatasetExploration -> exploreVkDatasetService.exploreCurrentLocation(vkDatasetExploration) })
+    }
 
+    VkDatasetExploration startNewTopFacultiesExploration(Integer numberOfFacultiesToTake) {
+        TopFacultiesExploration topFacultiesExploration = new TopFacultiesExploration()
+        topFacultiesExploration.name = 'top faculties'
+        topFacultiesExploration.numberOfFacultiesToTake = numberOfFacultiesToTake ?: Integer.MAX_VALUE
+        startNewExploration(topFacultiesExploration, { vkDatasetExploration -> exploreVkDatasetService.exploreTopFaculties(vkDatasetExploration) })
+    }
+
+    private VkDatasetExploration startNewExploration(VkDatasetExploration vkDatasetExploration, Closure exploration) {
+        vkDatasetExploration.status = ExplorationStatus.RUNNING.toString()
         vkDatasetExploration = vkDatasetExplorationRepository.save vkDatasetExploration
 
-        taskExecutor.execute({ exploreVkDatasetService.getVkDatasetExploration(vkDatasetExploration) })
+        taskExecutor.execute(exploration.curry(vkDatasetExploration))
 
         return vkDatasetExploration
     }
@@ -74,5 +87,9 @@ class ExplorationService {
         } else {
             return allExplorations.first()
         }
+    }
+
+    List<VkDatasetExploration> getAllExplorations() {
+        vkDatasetExplorationRepository.findAll(new Sort(Sort.Direction.DESC, 'startTimestamp'))
     }
 }
