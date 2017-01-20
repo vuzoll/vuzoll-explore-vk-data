@@ -48,16 +48,20 @@ class Distribution<T> {
             if (distributionEntry == null) {
                 distributionEntry = new DistributionEntry(object)
                 distributionEntries.put(object, distributionEntry)
-                numberOfOptions = distributionEntries.size()
             }
+
+            numberOfOptions = distributionEntries.size()
+            distributionEntry.count++
 
             distribution = new TreeSet<>(distributionEntries.collect({ key, value -> value }))
             if (numberOfOptionsLimit != null) {
                 distribution = distribution.take(numberOfOptionsLimit)
             }
-            distributionEntry.count++
-            distributionEntry.percentageTotal = distributionEntry.count / totalCount
-            distributionEntry.percentageNotNull = distributionEntry.count / notNullCount
+
+            distribution.each {
+                it.percentageTotal = it.count / totalCount
+                it.percentageNotNull = it.count / notNullCount
+            }
         }
     }
 

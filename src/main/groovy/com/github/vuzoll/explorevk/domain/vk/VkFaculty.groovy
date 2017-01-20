@@ -3,7 +3,7 @@ package com.github.vuzoll.explorevk.domain.vk
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.builder.Builder
 
-@EqualsAndHashCode
+@EqualsAndHashCode(includes = 'facultyId')
 @Builder
 class VkFaculty {
 
