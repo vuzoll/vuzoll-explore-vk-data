@@ -44,10 +44,14 @@ class Distribution<T> {
             nullCount++
         } else {
             notNullCount++
-            DistributionEntry distributionEntry = distributionEntries.getOrDefault(object, new DistributionEntry(object))
+            DistributionEntry distributionEntry = distributionEntries.get(object)
+            if (distributionEntry == null) {
+                distributionEntry = new DistributionEntry(object)
+                distributionEntries.put(object, distributionEntry)
+                numberOfOptions = distributionEntries.size()
+            }
 
-            numberOfOptions = distributionEntries.size()
-            distribution = distributionEntries.collect({ key, value -> value }).sort()
+            distribution = new TreeSet<>(distributionEntries.collect({ key, value -> value }))
             if (numberOfOptionsLimit != null) {
                 distribution = distribution.take(numberOfOptionsLimit)
             }
