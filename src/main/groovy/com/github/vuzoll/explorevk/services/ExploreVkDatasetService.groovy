@@ -1,7 +1,9 @@
 package com.github.vuzoll.explorevk.services
 
+import com.github.vuzoll.explorevk.domain.exploration.CurrentLocationExploration
 import com.github.vuzoll.explorevk.domain.exploration.Distribution
 import com.github.vuzoll.explorevk.domain.exploration.ExplorationStatus
+import com.github.vuzoll.explorevk.domain.exploration.TopFacultiesExploration
 import com.github.vuzoll.explorevk.domain.exploration.VkDatasetExploration
 import com.github.vuzoll.explorevk.domain.vk.VkFaculty
 import com.github.vuzoll.explorevk.domain.vk.VkProfile
@@ -17,8 +19,6 @@ import org.joda.time.format.PeriodFormatterBuilder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.mongodb.core.MongoTemplate
-import org.springframework.data.mongodb.core.query.Criteria
-import org.springframework.data.mongodb.core.query.CriteriaDefinition
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Service
 
@@ -34,6 +34,8 @@ class ExploreVkDatasetService {
             .appendSeconds().appendSuffix('sec')
             .toFormatter()
 
+    static final Integer UKRAINE_ID = 2
+
     @Autowired
     VkProfileRepository vkProfileRepository
 
@@ -43,7 +45,29 @@ class ExploreVkDatasetService {
     @Autowired
     VkDatasetExplorationRepository vkDatasetExplorationRepository
 
-    VkDatasetExploration getVkDatasetExploration(VkDatasetExploration vkDatasetExploration) {
+    VkDatasetExploration exploreCurrentLocation(CurrentLocationExploration currentLocationExploration) {
+        explore(currentLocationExploration,
+                { CurrentLocationExploration exploration ->
+                    exploration.countryDistribution = new Distribution<>()
+                    exploration.cityDistribution = new Distribution<>()
+                },
+                { CurrentLocationExploration exploration, VkProfile vkProfile ->
+                    exploration.countryDistribution.add(vkProfile.country)
+                    exploration.cityDistribution.add(vkProfile.city)
+                })
+    }
+
+    VkDatasetExploration exploreTopFaculties(TopFacultiesExploration topFacultiesExploration) {
+        explore(topFacultiesExploration,
+                { TopFacultiesExploration exploration ->
+                    exploration.facultyDistribution = new Distribution<>(topFacultiesExploration.numberOfFacultiesToTake)
+                },
+                { TopFacultiesExploration exploration, VkProfile vkProfile ->
+                    exploration.facultyDistribution.add(vkProfile.universityRecords.collect(this.&toFaculty).findAll({ it.university.countryId ==  UKRAINE_ID }))
+                })
+    }
+
+    private VkDatasetExploration explore(VkDatasetExploration vkDatasetExploration, Closure initAction, Closure exploreAction) {
         try {
             log.info "ExplorationId=${vkDatasetExploration.id}: generating vk dataset exploration..."
             vkDatasetExploration.startTimestamp = System.currentTimeMillis()
@@ -58,11 +82,8 @@ class ExploreVkDatasetService {
             vkDatasetExploration.timeTaken = toDurationString(System.currentTimeMillis() - vkDatasetExploration.startTimestamp)
             vkDatasetExplorationRepository.save vkDatasetExploration
 
-            vkDatasetExploration.countriesDistribution = new Distribution<>()
-            vkDatasetExploration.citiesDistribution = new Distribution<>()
-            vkDatasetExploration.universitiesDistribution = new Distribution<>()
-            vkDatasetExploration.facultiesDistribution = new Distribution<>()
-            vkDatasetExploration.graduationYearDistribution = new Distribution<>()
+            initAction.call(vkDatasetExploration)
+            vkDatasetExplorationRepository.save vkDatasetExploration
 
             mongoTemplate.stream(new Query(), VkProfile).eachWithIndex { VkProfile vkProfile, int index ->
                 if (index % 100 == 0) {
@@ -73,17 +94,19 @@ class ExploreVkDatasetService {
                     vkDatasetExplorationRepository.save vkDatasetExploration
                 }
 
-                vkDatasetExploration.countriesDistribution.add(vkProfile.country)
-                vkDatasetExploration.citiesDistribution.add(vkProfile.city)
-                vkDatasetExploration.universitiesDistribution.add(vkProfile.universityRecords.collect(this.&toUniversity))
-                vkDatasetExploration.facultiesDistribution.add(vkProfile.universityRecords.collect(this.&toFaculty))
-                vkDatasetExploration.graduationYearDistribution.add(vkProfile.universityRecords.graduationYear)
+                exploreAction.call(vkDatasetExploration, vkProfile)
             }
+
+            log.error("ExplorationId=${vkDatasetExploration.id}: exploration succeeded", e)
+            vkDatasetExploration.endTime = System.currentTimeMillis()
+            vkDatasetExploration.lastUpdateTime = vkDatasetExploration.endTime
+            vkDatasetExploration.timeTaken = toDurationString(System.currentTimeMillis() - vkDatasetExploration.startTimestamp)
+            vkDatasetExploration.status = ExplorationStatus.COMPLETED.toString()
+            vkDatasetExplorationRepository.save vkDatasetExploration
 
             return vkDatasetExploration
         } catch (e) {
             log.error("ExplorationId=${vkDatasetExploration.id}: exploration failed", e)
-
             vkDatasetExploration.message = "Failed because of ${e.class.name}, with message: ${e.message}"
             vkDatasetExploration.lastUpdateTime = System.currentTimeMillis()
             vkDatasetExploration.timeTaken = toDurationString(System.currentTimeMillis() - vkDatasetExploration.startTimestamp)
