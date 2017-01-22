@@ -10,6 +10,5 @@ RUN ln -s /usr/app/vuzoll-explore-vk-data-* /usr/app/vuzoll-explore-vk-data
 
 WORKDIR /usr/app/vuzoll-explore-vk-data
 
-EXPOSE 8080
 ENTRYPOINT ["./bin/vuzoll-explore-vk-data"]
 CMD []

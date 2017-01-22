@@ -121,31 +121,6 @@ class ExploreVkDatasetService {
         }
     }
 
-    VkProfile getRandomVkProfile() {
-        log.info 'Getting random vk profile...'
-
-        log.info 'Calculating dataset size...'
-        int datasetSize = vkProfileRepository.count()
-
-        log.info 'Selecting random profile...'
-        int randomVkProfileIndex = RandomUtils.nextInt(0, datasetSize)
-
-        log.info "Getting profile with index ${randomVkProfileIndex} / ${datasetSize}..."
-        return vkProfileRepository.findAll(new PageRequest(randomVkProfileIndex, 1)).content.first()
-    }
-
-    VkProfile getVkProfileById(String id) {
-        log.info "Getting profile with id=${id}..."
-
-        vkProfileRepository.findOne(id)
-    }
-
-    VkProfile getVkProfileByVkId(Integer vkId) {
-        log.info "Getting profile with vkId=${vkId}..."
-
-        vkProfileRepository.findOneByVkId(vkId)
-    }
-
     private VkUniversity toUniversity(VkUniversityRecord vkUniversityRecord) {
         if (vkUniversityRecord.universityId == null) {
             return null
