@@ -3,6 +3,7 @@ package com.github.vuzoll.explorevk.services
 import com.github.vuzoll.explorevk.domain.exploration.CurrentLocationExploration
 import com.github.vuzoll.explorevk.domain.exploration.ExplorationStatus
 import com.github.vuzoll.explorevk.domain.exploration.TopFacultiesExploration
+import com.github.vuzoll.explorevk.domain.exploration.TopUniversitiesExploration
 import com.github.vuzoll.explorevk.domain.exploration.VkDatasetExploration
 import com.github.vuzoll.explorevk.repository.exploration.VkDatasetExplorationRepository
 import groovy.util.logging.Slf4j
@@ -63,8 +64,16 @@ class ExplorationService {
     VkDatasetExploration startNewTopFacultiesExploration(Integer numberOfFacultiesToTake) {
         TopFacultiesExploration topFacultiesExploration = new TopFacultiesExploration()
         topFacultiesExploration.name = 'top faculties'
-        topFacultiesExploration.numberOfFacultiesToTake = numberOfFacultiesToTake ?: Integer.MAX_VALUE
+        topFacultiesExploration.numberOfFacultiesToTake = numberOfFacultiesToTake
         startNewExploration(topFacultiesExploration, { vkDatasetExploration -> exploreVkDatasetService.exploreTopFaculties(vkDatasetExploration) })
+    }
+
+
+    VkDatasetExploration startNewTopUniversitiesExploration(Integer numberOfUniversitiesToTake) {
+        TopUniversitiesExploration topUniversitiesExploration = new TopUniversitiesExploration()
+        topUniversitiesExploration.name = 'top universities'
+        topUniversitiesExploration.numberOfUniversitiesToTake = numberOfUniversitiesToTake
+        startNewExploration(topUniversitiesExploration, { vkDatasetExploration -> exploreVkDatasetService.exploreTopUniversities(vkDatasetExploration) })
     }
 
     private VkDatasetExploration startNewExploration(VkDatasetExploration vkDatasetExploration, Closure exploration) {

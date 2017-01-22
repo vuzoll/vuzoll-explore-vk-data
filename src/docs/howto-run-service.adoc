@@ -1,19 +1,27 @@
 = HOWTO: run service
 
-POST to http://139.59.141.72:8081/explore/current-location
+POST to http://<host>:<port>/explore/current-location
 
-POST to http://139.59.141.72:8081/explore/top-faculties/{numberOfFacultiesToTake}
+POST to http://<host>:<port>/explore/top-faculties/{numberOfFacultiesToTake}
 
-
-GET to http://139.59.141.72:8081/exploration/{explorationId}
-
-GET to http://139.59.141.72:8081/exploration/last
-
-GET to http://139.59.141.72:8081/exploration/all
+POST to http://<host>:<port>/explore/top-universities/{numberOfUniversitiesToTake}
 
 
-GET to http://139.59.141.72:8081/explore/profile/random
+GET to http://<host>:<port>/exploration/{explorationId}
 
-GET to http://139.59.141.72:8081/explore/profile/id/{id}
+GET to http://<host>:<port>/exploration/last
 
-GET to http://139.59.141.72:8081/explore/profile/vkId/{vkId}
+GET to http://<host>:<port>/exploration/all
+
+
+GET to http://<host>:<port>/explore/profile/random
+
+GET to http://<host>:<port>/explore/profile/id/{id}
+
+GET to http://<host>:<port>/explore/profile/vkId/{vkId}
+
+== Service locations
+
+Development instance - 138.68.99.206:8081
+
+Production instance - 139.59.141.72:8081

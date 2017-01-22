@@ -4,6 +4,7 @@ import com.github.vuzoll.explorevk.domain.exploration.CurrentLocationExploration
 import com.github.vuzoll.explorevk.domain.exploration.Distribution
 import com.github.vuzoll.explorevk.domain.exploration.ExplorationStatus
 import com.github.vuzoll.explorevk.domain.exploration.TopFacultiesExploration
+import com.github.vuzoll.explorevk.domain.exploration.TopUniversitiesExploration
 import com.github.vuzoll.explorevk.domain.exploration.VkDatasetExploration
 import com.github.vuzoll.explorevk.domain.vk.VkFaculty
 import com.github.vuzoll.explorevk.domain.vk.VkProfile
@@ -70,6 +71,16 @@ class ExploreVkDatasetService {
                 })
     }
 
+    VkDatasetExploration exploreTopUniversities(TopUniversitiesExploration topUniversitiesExploration) {
+        explore(topUniversitiesExploration,
+                { TopUniversitiesExploration exploration ->
+                    exploration.universityDistribution = new Distribution<>({ VkUniversity it -> it == null || it.countryId != UKRAINE_ID }, topUniversitiesExploration.numberOfUniversitiesToTake)
+                },
+                { TopUniversitiesExploration exploration, VkProfile vkProfile ->
+                    exploration.universityDistribution.add(vkProfile.universityRecords.collect(this.&toUniversity))
+                })
+    }
+
     private VkDatasetExploration explore(VkDatasetExploration vkDatasetExploration, Closure initAction, Closure exploreAction) {
         try {
             log.info "ExplorationId=${vkDatasetExploration.id}: generating vk dataset exploration..."
@@ -119,31 +130,6 @@ class ExploreVkDatasetService {
 
             throw e
         }
-    }
-
-    VkProfile getRandomVkProfile() {
-        log.info 'Getting random vk profile...'
-
-        log.info 'Calculating dataset size...'
-        int datasetSize = vkProfileRepository.count()
-
-        log.info 'Selecting random profile...'
-        int randomVkProfileIndex = RandomUtils.nextInt(0, datasetSize)
-
-        log.info "Getting profile with index ${randomVkProfileIndex} / ${datasetSize}..."
-        return vkProfileRepository.findAll(new PageRequest(randomVkProfileIndex, 1)).content.first()
-    }
-
-    VkProfile getVkProfileById(String id) {
-        log.info "Getting profile with id=${id}..."
-
-        vkProfileRepository.findOne(id)
-    }
-
-    VkProfile getVkProfileByVkId(Integer vkId) {
-        log.info "Getting profile with vkId=${vkId}..."
-
-        vkProfileRepository.findOneByVkId(vkId)
     }
 
     private VkUniversity toUniversity(VkUniversityRecord vkUniversityRecord) {

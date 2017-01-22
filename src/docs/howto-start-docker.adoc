@@ -1,17 +1,10 @@
 = HOWTO: start service as docker container
 
-== Environment preparations
+== Cleaning previously started container
 
 [source,shell]
 ----
-mkdir -p /logs
-----
-
-== Cleaning previosly started container
-
-[source,shell]
-----
-docker ps -a # to determine if container is already running
+docker ps -a
 docker kill vuzoll_explore_vk_data; docker rm vuzoll_explore_vk_data
 ----
 
@@ -41,6 +34,6 @@ EXPLORE_VK_VUZOLL_LOG_LEVEL - logging level for service code (default is INFO)
 
 [source,shell]
 ----
-docker pull vuzoll/vuzoll-explore-vk-data:$TAG # to load specific image
-docker run -dit --name vuzoll_explore_vk_data --link vuzoll_mongo -v /logs:/logs -e EXPLORE_VK_MONGO_PASSWORD=MONGODB_PASSWORD -p 8081:8080 vuzoll/vuzoll-explore-vk-data:$TAG # to start specific image
+docker pull vuzoll/vuzoll-explore-vk-data:$TAG
+docker run -dit --name vuzoll_explore_vk_data --link vuzoll_mongo -v /logs:/logs -e EXPLORE_VK_MONGO_PASSWORD=MONGODB_PASSWORD -p 8081:8080 vuzoll/vuzoll-explore-vk-data:$TAG
 ----
