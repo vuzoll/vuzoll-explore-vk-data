@@ -39,6 +39,19 @@ class ExploreVkDatasetController {
         return explorationService.startNewTopFacultiesExploration(numberOfFacultiesToTake)
     }
 
+    @PostMapping(path = '/explore/top-universities/{numberOfUniversitiesToTake}')
+    @ResponseBody VkDatasetExploration exploreTopUniversities(@PathVariable Integer numberOfUniversitiesToTake) {
+        log.info "Receive 'top universities' exploration request"
+
+        VkDatasetExploration currentlyRunningExploration = explorationService.getCurrentlyRunningExploration()
+        if (currentlyRunningExploration != null) {
+            log.error "Service is busy with another exploration id=$currentlyRunningExploration.id, can't accept new one"
+            throw new IllegalStateException("Service is busy with another exploration id=$currentlyRunningExploration.id, can't accept new one")
+        }
+
+        return explorationService.startNewTopUniversitiesExploration(numberOfUniversitiesToTake)
+    }
+
     @GetMapping(path = '/exploration/{explorationId}')
     @ResponseBody VkDatasetExploration explorationStatus(@PathVariable String explorationId) {
         explorationService.explorationStatus(explorationId)

@@ -4,6 +4,7 @@ import com.github.vuzoll.explorevk.domain.exploration.CurrentLocationExploration
 import com.github.vuzoll.explorevk.domain.exploration.Distribution
 import com.github.vuzoll.explorevk.domain.exploration.ExplorationStatus
 import com.github.vuzoll.explorevk.domain.exploration.TopFacultiesExploration
+import com.github.vuzoll.explorevk.domain.exploration.TopUniversitiesExploration
 import com.github.vuzoll.explorevk.domain.exploration.VkDatasetExploration
 import com.github.vuzoll.explorevk.domain.vk.VkFaculty
 import com.github.vuzoll.explorevk.domain.vk.VkProfile
@@ -67,6 +68,16 @@ class ExploreVkDatasetService {
                 },
                 { TopFacultiesExploration exploration, VkProfile vkProfile ->
                     exploration.facultyDistribution.add(vkProfile.universityRecords.collect(this.&toFaculty))
+                })
+    }
+
+    VkDatasetExploration exploreTopUniversities(TopUniversitiesExploration topUniversitiesExploration) {
+        explore(topUniversitiesExploration,
+                { TopUniversitiesExploration exploration ->
+                    exploration.universityDistribution = new Distribution<>({ VkUniversity it -> it == null || it.countryId != UKRAINE_ID }, topUniversitiesExploration.numberOfUniversitiesToTake)
+                },
+                { TopUniversitiesExploration exploration, VkProfile vkProfile ->
+                    exploration.universityDistribution.add(vkProfile.universityRecords.collect(this.&toUniversity))
                 })
     }
 
