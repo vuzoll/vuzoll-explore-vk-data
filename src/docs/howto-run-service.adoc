@@ -13,13 +13,6 @@ GET to http://<host>:<port>/exploration/last
 
 GET to http://<host>:<port>/exploration/all
 
-
-GET to http://<host>:<port>/explore/profile/random
-
-GET to http://<host>:<port>/explore/profile/id/{id}
-
-GET to http://<host>:<port>/explore/profile/vkId/{vkId}
-
 == Service locations
 
 Development instance - 138.68.99.206:8081
