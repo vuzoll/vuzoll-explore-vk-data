@@ -1,0 +1,39 @@
+= HOWTO: start service as docker container
+
+== Cleaning previously started container
+
+[source,shell]
+----
+docker ps -a
+docker kill vuzoll_explore_vk_data; docker rm vuzoll_explore_vk_data
+----
+
+== Configuration parameters
+
+Following environment variable are avaiable for global service configuration:
+
+MONGO_DATABASE_NAME - mongodb database name to use (default is vuzoll)
+
+MONGO_AUTH_DATABASE_NAME - mongodb database name used for authentication (default is admin)
+
+MONGO_HOST - host of mongodb instance (default is vuzoll_mongo)
+
+MONGO_PORT - port of mongodb instance (default is 27017)
+
+MONGO_USERNAME - username for authentication to mongodb (default is exploreVkService)
+
+MONGO_PASSWORD - password for authentication to mongodb
+
+EXPLORE_VK_EXPLORATION_CHUNK_SIZE - size of data chunk to flush to database after exploring it (default it 100)
+
+EXPLORE_VK_ROOT_LOG_LEVEL - logging level for third-party libraries (default is INFO)
+
+EXPLORE_VK_VUZOLL_LOG_LEVEL - logging level for service code (default is INFO)
+
+== Start service
+
+[source,shell]
+----
+docker pull vuzoll/vuzoll-explore-vk-data:$TAG
+docker run -dit --name vuzoll_explore_vk_data --link vuzoll_mongo -v /logs:/logs -e MONGO_PASSWORD=MONGODB_PASSWORD -p 8081:8080 vuzoll/vuzoll-explore-vk-data:$TAG
+----
